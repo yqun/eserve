@@ -1,0 +1,36 @@
+li {
+  height: 100px;
+  box-sizing: border-box;
+  border: 1px solid #01AAED;
+  border-radius: 5px;
+  margin: 5px 0;
+  overflow: hidden;
+}
+li > div {
+  float: left;
+  box-sizing: border-box;
+}
+.item-state {
+  width: 30%;
+  height: 100%;
+  color: #fff;
+  background-color: #2A91D8;
+  font-size: 20px;
+  text-align: center;
+  line-height: 100px;
+}
+.item-content {
+  width: 70%;
+  color: #666;
+  padding-left: 4px;
+}
+.item-content h3 {
+  font-weight: 400;
+}
+.item-content p {
+  font-size: 14px;
+}
+.item-content span {
+  font-size: 12px;
+  color: #00BE67;
+}

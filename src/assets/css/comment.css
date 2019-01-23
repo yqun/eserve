@@ -1,0 +1,15 @@
+/* 主题内容左右边距 */
+.content {
+  padding: 0 10px;
+}
+/* 顶部固定定位 返回 上内边距*/
+.fixedpadding {
+  padding-top: 46px;
+}
+.clearfix::after, .clearfix::before {
+  content: '';
+  height: 0;
+  overflow: hidden;
+  display: block;
+  clear: both;
+}
