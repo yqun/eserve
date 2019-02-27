@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 46px 0 53px;">
+  <div style="padding: 46px 0 53px; height: 100%; box-sizing: border-box;">
     <div class="header">
       e服务
     </div>

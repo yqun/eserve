@@ -1,21 +1,23 @@
 <template>
   <div class="content">
-    <!-- 内容 -->
-    <ul>
-      <li class="clearfix"
-          v-for="(item,i) in list" :key="i"
-          @click="$router.push('/addorder')">
-        <div class="item-pic">
-          <img src="" alt="">
-        </div>
-        <div class="item-content">
-          <h3>售前服务</h3>
-          <p>售前服务</p>
-          <p>负责人</p>
-          <p>负责人</p>
-        </div>
-      </li>
-    </ul>
+    <scroller lock-x height="100%" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
+      <ul>
+        <li class="clearfix"
+            v-for="(item,i) in list" :key="i"
+            @click="$router.push('/addorder')">
+          <div class="item-pic">
+            <img src="" alt="">
+          </div>
+          <div class="item-content">
+            <h3>售前服务{{i+1}}</h3>
+            <p>售前服务</p>
+            <p>负责人</p>
+            <p>负责人</p>
+          </div>
+        </li>
+      </ul>
+      <!--<load-more tip="loading"></load-more>-->
+    </scroller>
   </div>
 </template>
 
@@ -24,18 +26,32 @@ export default {
   name: "internalorder",
   data() {
     return {
-      list: [{},{},{},{},{},{},{}]
+      list: [{},{},{},{},{}],
+      flag: true
     }
   },
+  created() {
+    console.log(this)
+  },
   methods: {
-    getIndex (index) {
-      console.log(index)
+    onScrollBottom() {
+      if (!this.flag) return false;
+      this.flag = false
+      for(var i = 0; i < 5; i++) {
+        this.list.push({})
+      }
+      setTimeout(() => {
+        this.flag = true
+      }, 2000)
     }
   }
 }
 </script>
 
 <style scoped>
+.content {
+  height: 100%;
+}
 li {
   height: 100px;
   box-sizing: border-box;

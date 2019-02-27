@@ -4,7 +4,7 @@
       <x-input title="　用户名:"　:show-clear="false" text-align="right"></x-input>
       <selector title="　　性别:" :options="list" direction="rtl"></selector>
       <x-input title="　手机号:" disabled text-align="right"></x-input>
-      <datetime title="出生日期:" v-model="datetime"></datetime>
+      <datetime title="出生日期:" v-model="datetime" :min-year="1950"></datetime>
       <x-input title="　　备注:" :show-clear="false" text-align="right"></x-input>
     </group>
     <!-- 保存  修改手机号  修改密码 -->
@@ -27,7 +27,7 @@
     </flexbox>
     <!-- 退出登录 -->
     <div class="content">
-      <x-button class="btn" type="warn">退出登录</x-button>
+      <x-button class="btn" type="warn" link="/login">退出登录</x-button>
     </div>
   </div>
 </template>

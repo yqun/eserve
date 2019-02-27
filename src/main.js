@@ -5,6 +5,7 @@ import FastClick from 'fastclick'
 import router from './router/index'
 import App from './App'
 import FileUpload from 'vue-upload-component'
+import Axios from './request/config'
 
 // 全局css
 import './assets/css/comment.css'
@@ -23,9 +24,13 @@ import { XButton } from 'vux'
 import { XTextarea } from 'vux'
 import { Timeline } from 'vux'
 import { TimelineItem } from 'vux'
+import { Previewer } from 'vux'
+import { Checker, CheckerItem } from 'vux'
+import { XAddress } from 'vux'
+import { Scroller } from 'vux'
+import { LoadMore  } from 'vux'
 
-
-
+Vue.use(Axios)
 
 // 自定义全局组件
 import NavBar from './components/navBar'
@@ -51,6 +56,21 @@ Vue.component('x-button', XButton)
 Vue.component('x-textarea', XTextarea)
 Vue.component('timeline', Timeline)
 Vue.component('timeline-item', TimelineItem)
+Vue.component('previewer', Previewer)
+Vue.component('checker', Checker)
+Vue.component('checker-item', CheckerItem)
+Vue.component('x-address', XAddress)
+Vue.component('scroller', Scroller)
+Vue.component('load-more', LoadMore)
+
+// 注册一个全局自定义指令 `v-focus`
+Vue.directive('focus', {
+  // 当被绑定的元素插入到 DOM 中时……
+  inserted: function (el) {
+    // 聚焦元素
+    el.focus()
+  }
+})
 
 
 new Vue({

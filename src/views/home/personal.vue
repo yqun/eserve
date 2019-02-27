@@ -22,7 +22,7 @@ export default {
     // 返回的路由跳转
     routerLink() {
       let frompath = this.$router.path
-      if (frompath == '/updatephone' || frompath == '/updatepassword') {
+      if (frompath == '/updatephone' || frompath == '/updatepassword' || frompath == '/login') {
         frompath = '/'
       }
       this.$router.push(frompath)

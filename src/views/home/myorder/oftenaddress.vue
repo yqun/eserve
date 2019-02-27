@@ -10,17 +10,25 @@
     </x-header>
     <!-- 地址 -->
     <ul>
-      <li v-for="(item,index) in list" :key="index">{{item}}</li>
+      <li v-for="(item,index) in list" :key="index" @click="routerLink(item)">{{item}}</li>
     </ul>
   </div>
 </template>
 
 <script>
+import bus from '@/eventbus/eventbus'
+// import bus from '../../../eventbus/eventbus'
 export default {
   name: "oftenaddress",
   data() {
     return {
       list: ['1','2','3']
+    }
+  },
+  methods: {
+    routerLink(item) {
+      bus.$emit('sendAddress', item)
+      this.$router.push(this.$router.path)
     }
   }
 }

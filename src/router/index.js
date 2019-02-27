@@ -9,11 +9,14 @@ import Personal from '@/views/home/personal' // 个人中心
 import Userinfo from '@/views/home/personal/userinfo' // 个人中心 主页
 import Updatephone from '@/views/home/personal/updatephone' // 修改手机号
 import Updatepassword from '@/views/home/personal/updatepassword' // 修改密码
+import Ordersubmitview from '@/views/home/myorder/ordersubmitview' // 工单提交
 import Ordersubmit from '@/views/home/myorder/ordersubmit' // 工单提交
 import Oftenaddress from '@/views/home/myorder/oftenaddress' // 常用地址
+import Estimate from '@/views/home/myorder/estimate' // 常用地址
 import Assignedorderinfo from '@/views/home/assignedorder/assignedorderinfo' // assignedorderinfo工单详情
 import Performorderinfo from '@/views/home/performorder/performorderinfo' // performorderinfo工单详情
 import Addorder from '@/views/home/internalorder/addorder' // 新建工单
+import Login from '@/views/home/login'  // 登录
 
 Vue.use(Router)
 
@@ -42,11 +45,21 @@ const router = new Router ({
         {path: '/updatepassword', name:'updatepassword', component: Updatepassword},
       ]
     },
-    {path: '/ordersubmit', name:'ordersubmit', component: Ordersubmit},
-    {path: '/oftenaddress', name:'oftenaddress', component: Oftenaddress},
+    {
+      path: '/ordersubmitview',
+      name:'ordersubmitview',
+      component: Ordersubmitview,
+      redirect: {path: '/ordersubmit', name:'ordersubmit', component: Ordersubmit},
+      children: [
+        {path: '/ordersubmit', name:'ordersubmit', component: Ordersubmit, meta: {keepAlive: true}},
+        {path: '/addorder', name:'addorder', component: Addorder, meta: {keepAlive: true}},
+        {path: '/oftenaddress', name:'oftenaddress',component: Oftenaddress},
+      ]
+    },
+    {path: '/estimate',     name:'estimate',    component: Estimate},
     {path: '/assignedorderinfo/:id', name:'assignedorderinfo', component: Assignedorderinfo},
-    {path: '/performorderinfo/:id', name:'performorderinfo', component: Performorderinfo},
-    {path: '/addorder', name:'addorder', component: Addorder},
+    {path: '/performorderinfo/:id',  name:'performorderinfo', component: Performorderinfo},
+    {path: '/login', name:'login', component: Login},
   ]
 })
 
