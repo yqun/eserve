@@ -6,6 +6,8 @@ import router from './router/index'
 import App from './App'
 import FileUpload from 'vue-upload-component'
 import Axios from './request/config'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 
 // 全局css
 import './assets/css/comment.css'
@@ -29,9 +31,13 @@ import { Checker, CheckerItem } from 'vux'
 import { XAddress } from 'vux'
 import { Scroller } from 'vux'
 import { LoadMore  } from 'vux'
+import { Toast } from 'vux'
+import { Confirm } from 'vux'
+import { Alert } from 'vux'
+
 
 Vue.use(Axios)
-
+Vue.use(ElementUI)
 // 自定义全局组件
 import NavBar from './components/navBar'
 
@@ -62,6 +68,9 @@ Vue.component('checker-item', CheckerItem)
 Vue.component('x-address', XAddress)
 Vue.component('scroller', Scroller)
 Vue.component('load-more', LoadMore)
+Vue.component('toast', Toast)
+Vue.component('confirm', Confirm)
+Vue.component('alert', Alert)
 
 // 注册一个全局自定义指令 `v-focus`
 Vue.directive('focus', {

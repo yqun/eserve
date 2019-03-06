@@ -2,10 +2,14 @@
   <div class="content">
     <i class="iconfont icon-jiahao" @click="$router.push('/ordersubmit')"></i>
     <!-- 导航 -->
-    <nav-bar @sendIndex="getIndex"></nav-bar>
+    <nav-bar @sendIndex="getIndex" :index="index"></nav-bar>
     <!-- 内容 -->
     <ul>
-      <li class="item-content">金山顶尖</li>
+      <li class="item-content"
+          v-for="item in list" :key="item.id"
+          @click="routerLink(item.id)">
+        {{item.f_name}}
+      </li>
     </ul>
     <!-- 底部加号 -->
     <i class="add" @click="$router.push('/ordersubmit')">+</i>
@@ -17,15 +21,43 @@ export default {
   name: "myorder",
   data() {
     return {
-
+      index: 0,
+      list: [],
     }
   },
   created() {
-
+    this.getquery()
+    this.getMyorder()
   },
   methods: {
+    // 获取参数index
+    getquery() {
+      this.index = this.$route.query.index || 0
+    },
     getIndex(index) {
-      console.log(index);
+      this.index = index
+    },
+    routerLink(id) {
+      // console.log(id)
+      this.$router.push({
+        path: '/myorderlist',
+        query: {
+          id: id,
+          index: this.index
+        }
+      })
+    },
+    // 获取我的工单信息
+    getMyorder() {
+      this.axios
+        .get('org/findOrgsInRelation.do')
+        .then(res => {
+          // console.log(res)
+          const {status} = res
+          if (status !== 200) return false;
+          const {rows} = res.data
+          this.list = rows
+        })
     }
   }
 }

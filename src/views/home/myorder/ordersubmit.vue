@@ -12,16 +12,17 @@
       <selector title="资产类别"
                 direction="rtl"
                 :options="assets"
-                v-model="assestvalue"
+                v-model="assetskey"
                 placeholder="请选择资产类别">
       </selector>
       <selector title="服务单位"
                 direction="rtl"
                 :options="service"
-                v-model="servicevalue"
+                v-model="servicekey"
                 placeholder="请选择单位">
       </selector>
     </group>
+    <p class="person" v-for="item in serviceStaffers" :key="item.id">{{item.f_name}} {{item.f_phone_num}}</p>
     <group>
       <x-textarea :max="100"
                   v-model="questvalue"
@@ -39,11 +40,11 @@
       </div>
       <!-- 上传图片 -->
       <file-upload v-model="files"
+                   name="file"
                    ref="upload"
-                   post-action
+                   :post-action="uploadUrl"
                    put-action
                    @input-file="inputFile"
-                   @input-filter="inputFilter"
                    multiple>
         <i class="iconfont icon-tianjiatupian"></i>
       </file-upload>
@@ -66,6 +67,12 @@
       <x-textarea placeholder="备注" v-model="remarksvalue" :rows="2" :cols="10"></x-textarea>
     </group>
     <x-button :gradients="btncolor" class="btnsubmit" @click.native="orderinfo()">提交</x-button>
+    <!-- toast -->
+    <toast v-model="toastShow"
+           :text="toastValue"
+           type="text" :time="800"
+           is-show-mask
+           position="middle" width="10em"></toast>
   </div>
 </template>
 
@@ -79,16 +86,18 @@ export default {
   name: "ordersubmit",
   data() {
     return {
-      assestvalue: null,
-      assets: [{key:1, value:'自有产品'},{key:2, value:'进口产品'}],
-      servicevalue: null,
-      service: [{key:1, value:'金山顶尖'},{key:2, value:'进口产品'}],
+      assetskey: null,
+      assets: [],
+      servicekey: null,
+      service: [],
+      serviceStaffers: [], // 公司负责人数组
       questvalue: '',
       btncolor: ['dodgerblue', 'dodgerblue'],
       addressvalue: '',
       remarksvalue: '',
       // 图片上传配置
       filesimg: [],
+      filesId: [],
       files: [],
       options: {
         getThumbBoundsFn (index) {
@@ -97,11 +106,33 @@ export default {
           let rect = thumbnail.getBoundingClientRect()
           return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
         }
-      }
+      },
+      toastShow: false,
+      toastValue: '',
+    }
+  },
+  watch: {
+    assetskey(newVal, oldVal) {
+      if (newVal == oldVal) return false;
+      this.getservice()
+    },
+    servicekey(newVal, oldVal) {
+      if (newVal == oldVal) return false;
+      this.service.forEach(item => {
+        if (item.key == newVal) {
+          this.serviceStaffers = item.serviceStaffers
+        }
+      })
+    },
+  },
+  computed: {
+    uploadUrl() {
+      return `http://10.1.1.44:8080/platform/system/uploadFile.do?token=${this.token}`
     }
   },
   created() {
-
+    this.token = window.sessionStorage.getItem('token')
+    this.getassets()
   },
   activated () {
     bus.$on('sendAddress', address => {
@@ -111,30 +142,6 @@ export default {
   methods: {
     routerLink() {
       this.$router.path == '/oftenaddress'? this.$router.push('/myorder'):this.$router.push(this.$router.path)
-    },
-    inputFilter (newFile, oldFile, prevent) {
-      if (newFile && !oldFile) {
-        // 添加文件
-
-        // 过滤非图片文件
-        // 不会添加到 files 去
-        if (!/\.(jpeg|jpe|jpg|gif|png|webp)$/i.test(newFile.name)) {
-          return prevent()
-        }
-
-        // 创建 `blob` 字段 用于缩略图预览
-        newFile.blob = ''
-        let URL = window.URL || window.webkitURL
-        if (URL && URL.createObjectURL) {
-          newFile.blob = URL.createObjectURL(newFile.file)
-          console.log(newFile)
-        }
-        // 点击显示的图片
-        this.filesimg.push({
-          msrc: URL.createObjectURL(newFile.file),
-          src: URL.createObjectURL(newFile.file),
-        })
-      }
     },
     inputFile(newFile, oldFile) {
       if (newFile && oldFile) {
@@ -154,6 +161,26 @@ export default {
         // 上传成功
         if (newFile.success !== oldFile.success) {
           console.log('success', newFile.success, newFile)
+          this.filesId.push(newFile.response.id)
+          console.log(this.filesId)
+          // 过滤非图片文件
+          // 不会添加到 files 去
+          if (!/\.(jpeg|jpe|jpg|gif|png|webp)$/i.test(newFile.name)) {
+            return prevent()
+          }
+
+          // 创建 `blob` 字段 用于缩略图预览
+          newFile.blob = ''
+          let URL = window.URL || window.webkitURL
+          if (URL && URL.createObjectURL) {
+            newFile.blob = URL.createObjectURL(newFile.file)
+            // console.log(newFile)
+          }
+          // 点击显示的图片
+          this.filesimg.push({
+            msrc: URL.createObjectURL(newFile.file),
+            src: URL.createObjectURL(newFile.file),
+          })
         }
       }
 
@@ -179,11 +206,93 @@ export default {
     show (index) {
       this.$refs.previewer.show(index)
     },
+    // 删除文件
     remove(file,index) {
       this.$refs.upload.remove(file)
       this.filesimg.splice(index, 1)
+      this.filesId.splice(index, 1)
     },
+    // 获取资产类别
+    getassets() {
+      this.axios
+        .get('equmentType/findEntityByPage.do')
+        .then(res => {
+          // console.log(res)
+          const {rows} = res.data
+          if (!rows.length) return false;
+          rows.forEach(item => {
+            this.assets.push({
+              key:item.id,
+              value:item.f_name,
+              f_unit_id: item.f_unit_id
+            })
+          })
+        })
+    },
+    // 获取服务单位
+    getservice() {
+      this.service.length = 0;
+      this.servicekey = null;
+      this.axios
+        .get(`equmentType/findSuppliesByEqumentType.do?id=${this.assetskey}`)
+        .then(res => {
+          // console.log(res)
+          const {rows} = res.data
+          if (!rows.length) return false;
+          rows.forEach(item => {
+            this.service.push({
+              key:item.id,
+              value:item.f_name,
+              serviceStaffers: item.serviceStaffers
+            })
+          })
+          if (this.service.length == 1) {
+            this.servicekey = this.service[0].key
+          }
+        })
+    },
+    // 点击提交按钮
     orderinfo() {
+      // service
+      // assets
+      let servicevalue,assetsvalue;
+      this.assets.forEach(item => {
+        if (this.assetskey == item.key) return assetsvalue = item.value
+      })
+      this.service.forEach(item => {
+        if (this.servicekey == item.key) return servicevalue = item.value
+      })
+      const data = {
+        ids: this.filesId,
+        f_equmentType_id: this.assetskey,
+        f_equmentType_name: assetsvalue,
+        f_handler_org_id: this.servicekey,
+        f_handler_org_name: servicevalue,
+        f_description: this.questvalue,
+        f_address: this.addressvalue,
+        f_remark: this.remarksvalue,
+      }
+      if (!this.questvalue || !this.assetskey || !this.servicekey) {
+        this.toastShow = true
+        this.toastValue = '请填写完整的信息'
+      } else {
+        this.axios
+          .post('/workOrder/saveCustomerWorkOrder.do', data)
+          .then(res => {
+            // console.log(res)
+            if(res.data.res = true) {
+              this.toastShow = true
+              this.toastValue = '提交完成'
+              setTimeout(() => {
+                this.$router.push('/')
+              }, 800)
+            } else {
+              const {error} = res.data
+              this.toastShow = true
+              this.toastValue = error
+            }
+          })
+      }
 
     }
   }
@@ -215,5 +324,8 @@ li.previewpic i.iconfont.icon-quancha {
 }
 i.iconfont.icon-tianjiatupian {
   font-size: 60px;
+}
+.person {
+  text-align: center;
 }
 </style>

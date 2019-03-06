@@ -29,11 +29,26 @@ li > div {
 }
 .item-content h3 {
   font-weight: 400;
+  overflow: hidden;
+  height: 29px;
 }
 .item-content p {
   font-size: 14px;
+  height: 22px;
+  overflow: hidden;
 }
 .item-content span {
   font-size: 12px;
   color: #00BE67;
+}
+.item-content i {
+  position: relative;
+  z-index:999;
+  font-size: 12px;
+  font-style: normal;
+  color: #fff;
+  background-color: #2A91D8;
+  padding: 0 2px;
+  margin: 0 0 10px 20px;
+  display: inline-block;
 }

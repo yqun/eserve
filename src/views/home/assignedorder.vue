@@ -1,26 +1,9 @@
 <template>
   <div class="content">
     <!-- 导航 -->
-    <nav-bar @sendIndex="getIndex" wait="待指派" success="已指派" cancel="已取消"></nav-bar>
+    <nav-bar @sendIndex="getIndex" wait="待指派" success="已指派" cancel="已取消" :index="index"></nav-bar>
     <!-- 内容 -->
-    <scroller lock-x height="100%" @on-scroll-bottom="onScrollBottom" :scroll-bottom-offst="200">
-      <ul>
-        <li class="clearfix"
-            @click="$router.push(`/assignedorderinfo/${index}`)"
-            v-for="(item,index) in list" :key="index">
-          <div class="item-content">
-            <h3>问题：描述</h3>
-            <p>客户：{{index+1}}</p>
-            <p>地址：农大南路</p>
-            <span>2018-01-15</span>
-          </div>
-          <div class="item-state">
-            已查看
-          </div>
-        </li>
-      </ul>
-    </scroller>
-
+    <router-view :index="index" :key="this.index"></router-view>
   </div>
 </template>
 
@@ -29,28 +12,21 @@ export default {
   name: "assignedorder",
   data() {
     return {
-      list: [{},{},{},{},{}],
-      flag: true,
+      index: 0,
     }
   },
-  created () {
-
+  created() {
+    this.getquery()
   },
   methods: {
-    getIndex(index) {
-      console.log(index)
+    // 获取参数
+    getquery() {
+      this.index = this.$route.query.index || 0
     },
-    onScrollBottom() {
-      if (!this.flag) return false;
-      this.flag = false
-      for(var i = 0; i < 5; i++) {
-        this.list.push({})
-      }
-      setTimeout(() => {
-        this.flag = true
-      }, 2000)
-    }
-  }
+    getIndex(index) {
+      this.index = index
+    },
+  },
 }
 </script>
 

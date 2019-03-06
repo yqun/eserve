@@ -49,14 +49,15 @@ export default {
     // 判断 进首页时的路由 判断底部tabbar
     getRouterPath() {
       const routerpath = this.$route.path
+      // console.log(routerpath)
       switch(routerpath) {
         case '/myorder':
           this.index = 0
         break;
-        case '/assignedorder':
+        case '/listItem':
           this.index = 1
         break;
-        case '/performorder':
+        case '/performlist':
           this.index = 2
         break;
         case '/internalorder':

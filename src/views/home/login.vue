@@ -8,6 +8,7 @@
     </div>
     <x-button :gradients="['#8acffe', '#2A91D8']" @click.native="login()">登录</x-button>
     <div class="footer">北京金山顶尖科技股份有限公司</div>
+    <toast v-model="toastShow" type="text" :time="800" is-show-mask :text="toastValue" position="middle" width="10em"></toast>
   </div>
 </template>
 
@@ -23,11 +24,35 @@ export default {
       useriphone: '',
       userpwd: '',
       username: false,
+      // toast
+      toastShow: false,
+      toastValue: ''
     }
   },
   methods: {
+    // 登录
     login() {
-      this.$router.push('/internalorder')
+      const data = {
+        f_phone_num: this.useriphone,
+        f_pwd: this.userpwd
+      }
+      this
+        .axios.post('user/mobile_logIn.do', data)
+        .then(res => {
+          const {state, token} = res.data
+          if (state === 1) {
+            // 成功
+            const {id} = res.data
+            window.sessionStorage.setItem('token', token)
+            window.sessionStorage.setItem('id', id)
+            this.$router.push('/internalorder')
+          } else {
+            // 失败
+            const {info} = res.data
+            this.toastShow = true
+            this.toastValue = info
+          }
+        })
     }
   }
 }
