@@ -231,6 +231,9 @@ export default {
           if (res.data.res == 'true') {
             this.toastValue = '保存成功';
             this.toastShow = true;
+            setTimeout(() => {
+              this.$router.push('/')
+            }, 800)
           } else {
             this.toastValue = '保存失败';
             this.toastShow = true;
