@@ -224,7 +224,7 @@ export default {
         ids: this.filesId, // 图片id
         f_remark: this.textareaval, // 备注
       }
-      console.log(data)
+      // console.log(data)
       // 判断  必选项
       if (!this.finishDate || !this.workContent) {
         this.toastShow = true

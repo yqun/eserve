@@ -45,7 +45,7 @@ export default {
       this.axios
         .get('/workOrderType/findEntityByPage.do')
         .then(res => {
-          console.log(res)
+          // console.log(res)
           const {status} = res
           if (status !== 200) return false;
           const {rows} = res.data

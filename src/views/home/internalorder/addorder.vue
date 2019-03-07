@@ -324,6 +324,7 @@ export default {
 }
 .btn {
   position: fixed;
+  z-index:999;
   bottom: 0;
   border-radius: 0px;
 }

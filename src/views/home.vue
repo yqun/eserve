@@ -10,12 +10,12 @@
         <i class="iconfont icon-fl-jia" slot="icon-active" style="color: orange"></i>
         <span slot="label">我的工单</span>
       </tabbar-item>
-      <tabbar-item link="/assignedorder">
+      <tabbar-item link="/assignedorder" v-if="assignedorder">
         <i class="iconfont icon-icon02" slot="icon"></i>
         <i class="iconfont icon-icon02" slot="icon-active" style="color: orange"></i>
         <span slot="label">指派工单</span>
       </tabbar-item>
-      <tabbar-item link="/performorder">
+      <tabbar-item link="/performorder" v-if="performorder">
         <i class="iconfont icon-fl-banzi" slot="icon"></i>
         <i class="iconfont icon-fl-banzi" slot="icon-active" style="color: orange"></i>
         <span slot="label">执行工单</span>
@@ -39,13 +39,32 @@ export default {
   name: "home",
   data() {
     return {
-      index: 3,
+      index: 1,
+      roles: [], // 用户权限
+      assignedorder: false,
+      performorder: false
     }
   },
   created() {
+    this.getUser()
     this.getRouterPath()
   },
   methods: {
+    // 获取  用户权限
+    getUser() {
+      const rolesStr = window.sessionStorage.getItem('roles')
+      this.roles = JSON.parse(rolesStr)
+      this.roles.forEach(item => {
+        if (item.id == 100) {
+          this.assignedorder = true
+          // this.index++
+        }
+        if (item.id == 8) {
+          this.performorder = true
+          // this.index++
+        }
+      })
+    },
     // 判断 进首页时的路由 判断底部tabbar
     getRouterPath() {
       const routerpath = this.$route.path
@@ -58,12 +77,27 @@ export default {
           this.index = 1
         break;
         case '/performlist':
-          this.index = 2
+          if (this.assignedorder == true) {
+            this.index = 2
+          } else {
+            this.index = 1
+          }
         break;
         case '/internalorder':
-          this.index = 3
+          // 如果两个中  有正确的 this.index = 2
+          if(this.assignedorder == true || this.performorder == true) {
+            this.index = 2
+            // 如果两个都正确  this.index = 3
+            if (this.assignedorder == true && this.performorder == true)  {
+              this.index = 3
+            }
+          } else {
+            // 如果两个都不正确 this.index = 1
+            this.index = 1
+          }
         break;
       }
+      // console.log(this.index)
     },
   }
 }

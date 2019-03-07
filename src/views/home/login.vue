@@ -39,12 +39,15 @@ export default {
       this
         .axios.post('user/mobile_logIn.do', data)
         .then(res => {
-          const {state, token} = res.data
+          console.log(res)
+          const {state, token, roles} = res.data
           if (state === 1) {
             // 成功
             const {id} = res.data
+            const rolesStr = JSON.stringify(roles)
             window.sessionStorage.setItem('token', token)
             window.sessionStorage.setItem('id', id)
+            window.sessionStorage.setItem('roles', rolesStr)
             this.$router.push('/internalorder')
           } else {
             // 失败
