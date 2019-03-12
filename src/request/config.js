@@ -2,7 +2,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import queryString from 'querystring'
 
-// const urlStr = 'http://10.1.9.34:1444/platform/'
+// const urlStr = 'http://47.104.72.244:80/platform/'
 const urlStr = 'http://10.1.1.44:8080/platform/'
 const Http = axios.create({
   baseURL: urlStr,
@@ -37,5 +37,6 @@ Http.interceptors.response.use(function (response) {
 })
 
 Vue.prototype.axios = Http
+Vue.prototype.axiosUrl = urlStr
 
 export default Http;

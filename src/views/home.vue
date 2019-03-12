@@ -55,7 +55,7 @@ export default {
       const rolesStr = window.sessionStorage.getItem('roles')
       this.roles = JSON.parse(rolesStr)
       this.roles.forEach(item => {
-        if (item.id == 100) {
+        if (item.id == 6) {
           this.assignedorder = true
           // this.index++
         }

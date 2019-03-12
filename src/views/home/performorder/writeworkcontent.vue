@@ -28,28 +28,24 @@
     <group>
       <!-- 图片展示 -->
       <div v-transfer-dom>
-        <previewer :list="filesimg"
+        <previewer :list="filesImg"
                    ref="previewer"
                    :options="options">
         </previewer>
       </div>
-      <!-- 图片上传 -->
-      <file-upload v-model="files"
-                   name="file"
-                   ref="upload"
-                   :post-action='uploadUrl'
-                   put-action
-                   @input-file="inputFile"
-                   multiple>
-        <i class="iconfont icon-tianjiatupian"></i>
-      </file-upload>
-      <!-- 图片展示列表 -->
-      <ul>
-        <li class="previewpic" v-for="(file,index) in files" :key="index">
-          <img class="previewer-demo-img" :src="file.blob" height="100" width="100" @click="show(index)"/>
-          <i class="iconfont icon-quancha" @click.prevent="remove(file,index)"></i>
-        </li>
-      </ul>
+      <!-- vux-uploader 图片上传 -->
+      <uploader
+        :max="5"
+        :handle-click="false"
+        :autoUpload="true"
+        :show-header="true"
+        :upload-url="uploadUrl"
+        name="file"
+        :images="images"
+        size="small"
+        :previmg="filesImg"
+        @preview="show"
+      ></uploader>
     </group>
     <!-- 交通费用，行驶里程 -->
     <group>
@@ -88,9 +84,13 @@
 </template>
 
 <script>
+import Uploader from 'vux-uploader'
 import { TransferDom } from 'vux'
 export default {
   name: "writeworkcontent",
+  components: {
+    Uploader,
+  },
   directives: {
     TransferDom,
   },
@@ -114,9 +114,9 @@ export default {
       textareaval: '', // 备注
       workContent: '', // 工作内容
       // 图片上传
-      files: [],
+      images: [],
       filesId: [],
-      filesimg: [],
+      filesImg: [],
       options: {
         getThumbBoundsFn(index) {
           let thumbnail = document.querySelectorAll(".previewer-demo-img")[index];
@@ -134,7 +134,7 @@ export default {
   },
   computed: {
     uploadUrl() {
-      return `http://10.1.1.44:8080/platform/system/uploadFile.do?token=${this.token}`
+      return `${this.axiosUrl}system/uploadFile.do?token=${this.token}`
     }
   },
   created() {
@@ -150,11 +150,10 @@ export default {
     },
     // 获取用户之前填写的数据
     getwritedinfo() {
-      console.log(this.orderId)
       this.axios
         .get(`orderLog/findOrderLogByWorkOrderAndUserToday.do?f_work_order_id=${this.orderId}`)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           const {orderLog} = res.data
           if (res.data.res == 1) {
             this.workContent = orderLog.f_work_content
@@ -168,52 +167,19 @@ export default {
           }
         })
     },
-    // 文件上传
-    inputFile(newFile, oldFile) {
-      if (newFile && oldFile) {
-
-        // 上传成功
-        if (newFile.success !== oldFile.success) {
-          this.filesId.push(newFile.response.id)
-          // console.log('success', newFile.response)
-
-          // 过滤非图片文件
-          // 不会添加到 files 去
-          if (!/\.(jpeg|jpe|jpg|gif|png|webp)$/i.test(newFile.name)) {
-            return prevent()
-          }
-          // 创建 `blob` 字段 用于缩略图预览
-          newFile.blob = ''
-          let URL = window.URL || window.webkitURL
-          if (URL && URL.createObjectURL) {
-            newFile.blob = URL.createObjectURL(newFile.file)
-          }
-          this.filesimg.push({
-            msrc: URL.createObjectURL(newFile.file),
-            src: URL.createObjectURL(newFile.file),
-          });
-        }
-      }
-
-      // 自动上传
-      if (Boolean(newFile) !== Boolean(oldFile) || oldFile.error !== newFile.error) {
-        if (!this.$refs.upload.active) {
-          this.$refs.upload.active = true
-        }
-      }
-    },
-    // 删除图片
-    remove(file,index) {
-      this.$refs.upload.remove(file)
-      this.filesimg.splice(index, 1)
-      this.filesId.splice(index, 1)
-    },
     // 展示 图片
     show (index) {
+      console.log(index)
       this.$refs.previewer.show(index)
     },
     // 提交表单
     submitData() {
+      // 获取图片id
+      this.images.forEach(item => {
+        // console.log(item)
+        this.filesId.push(item.id)
+      })
+      console.log(this.filesId)
       const data = {
         f_expected_date: this.finishDate, // 预计完成时间
         f_work_content: this.workContent, // 工作内容

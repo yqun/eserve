@@ -14,26 +14,24 @@
     <!-- 图片上传 -->
     <group>
       <div v-transfer-dom>
-        <previewer :list="filesimg"
+        <previewer :list="filesImg"
                    ref="previewer"
                    :options="options">
         </previewer>
       </div>
-      <file-upload v-model="files"
-                   name="file"
-                   ref="upload"
-                   :post-action='uploadUrl'
-                   put-action
-                   @input-file="inputFile"
-                   multiple>
-        <i class="iconfont icon-tianjiatupian"></i>
-      </file-upload>
-      <ul>
-        <li class="previewpic" v-for="(file,index) in files" :key="index">
-          <img class="previewer-demo-img" :src="file.blob" height="100" width="100" @click="show(index)"/>
-          <i class="iconfont icon-quancha" @click.prevent="remove(file,index)"></i>
-        </li>
-      </ul>
+      <!-- vux-uploader 图片上传 -->
+      <uploader
+        :max="5"
+        :handle-click="false"
+        :autoUpload="true"
+        :show-header="true"
+        :upload-url="uploadUrl"
+        name="file"
+        :images="images"
+        size="small"
+        :previmg="filesImg"
+        @preview="show"
+      ></uploader>
     </group>
     <!-- 客户信息 -->
     <group>
@@ -100,10 +98,14 @@
 </template>
 
 <script>
+import Uploader from 'vux-uploader'
 import { TransferDom } from 'vux'
 import bus from '@/eventbus/eventbus'
 export default {
   name: "addorder",
+  components: {
+    Uploader,
+  },
   directives: {
     TransferDom,
     focus: {
@@ -131,9 +133,9 @@ export default {
       // 备注
       remarksvalue: '',
       // 图片上传
-      files: [],
+      filesImg: [],
       filesId: [],
-      filesimg: [],
+      images: [],
       options: {
         getThumbBoundsFn(index) {
           let thumbnail = document.querySelectorAll(".previewer-demo-img")[index];
@@ -151,7 +153,7 @@ export default {
   },
   computed: {
     uploadUrl() {
-      return `http://10.1.1.44:8080/platform/system/uploadFile.do?token=${this.token}`
+      return `${this.axiosUrl}system/uploadFile.do?token=${this.token}`
     }
   },
   created() {
@@ -198,83 +200,19 @@ export default {
           }
         })
     },
-    // 文件上传
-    inputFile(newFile, oldFile) {
-      if (newFile && oldFile) {
-        // 开始上传
-        if (newFile.active !== oldFile.active) {
-          console.log('Start upload', newFile.active, newFile)
-          // 获得相应数据
-          console.log('response', newFile)
-          if (newFile.xhr) {
-            //  获得响应状态码
-            console.log('status', newFile.xhr.status)
-          }
-        }
-        // 上传进度
-        if (newFile.progress !== oldFile.progress) {
-          console.log('progress', newFile.progress, newFile)
-        }
-        // 上传错误
-        if (newFile.error !== oldFile.error) {
-          console.log('error', newFile.error, newFile)
-        }
-
-        // 上传成功
-        if (newFile.success !== oldFile.success) {
-          console.log('success', newFile.success, newFile)
-          this.filesId.push(newFile.response.id)
-
-          // 过滤非图片文件
-          // 不会添加到 files 去
-          if (!/\.(jpeg|jpe|jpg|gif|png|webp)$/i.test(newFile.name)) {
-            return prevent()
-          }
-          // 创建 `blob` 字段 用于缩略图预览
-          newFile.blob = ''
-          let URL = window.URL || window.webkitURL
-          if (URL && URL.createObjectURL) {
-            newFile.blob = URL.createObjectURL(newFile.file)
-          }
-          this.filesimg.push({
-            msrc: URL.createObjectURL(newFile.file),
-            src: URL.createObjectURL(newFile.file),
-          });
-        }
-      }
-
-      if (!newFile && oldFile) {
-        // 删除文件
-
-        // 自动删除 服务器上的文件
-        if (oldFile.success && oldFile.response.id) {
-          // $.ajax({
-          //   type: 'DELETE',
-          //   url: '/file/delete?id=' + oldFile.response.id,
-          // });
-        }
-      }
-
-      // 自动上传
-      if (Boolean(newFile) !== Boolean(oldFile) || oldFile.error !== newFile.error) {
-        if (!this.$refs.upload.active) {
-          this.$refs.upload.active = true
-        }
-      }
-    },
-    // 删除图片
-    remove(file,index) {
-      this.$refs.upload.remove(file)
-      this.filesimg.splice(index, 1)
-      this.filesId.splice(index, 1)
-    },
     // 展示 图片
     show (index) {
-      // console.log(index)
+      console.log(index)
       this.$refs.previewer.show(index)
     },
     // 提交按钮
     submitBtn () {
+      // 获取图片id
+      this.images.forEach(item => {
+        // console.log(item)
+        this.filesId.push(item.id)
+      })
+      // console.log(this.filesId)
       const data = {
         ids: this.filesId,
         f_description: this.questionvalue,

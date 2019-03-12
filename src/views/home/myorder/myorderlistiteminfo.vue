@@ -88,7 +88,7 @@ export default {
           this.orderInfo = data
           if (data.imgIds) {
             data.imgIds.forEach(item => {
-              item.imgUrl = `http://10.1.1.44:8080/platform/system/getImage.do?id=${item.id}`
+              item.imgUrl = `${this.axiosUrl}system/getImage.do?id=${item.id}`
             })
           } // end if
 

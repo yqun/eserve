@@ -51,7 +51,7 @@ export default {
           const {rows} = res.data
           this.list = rows
           this.list.forEach((item,index) => {
-            this.list[index].imgUrl = `http://10.1.1.44:8080/platform/system/getImage.do?id=${item.f_image_id}`
+            this.list[index].imgUrl = `${this.axiosUrl}system/getImage.do?id=${item.f_image_id}`
           })
         })
     },

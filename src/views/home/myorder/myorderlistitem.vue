@@ -74,7 +74,7 @@ export default {
       this.axios
         .get(`workOrder/findEntityByPage.do?f_handler_org_id=${this.id}&f_work_order_state=${this.status}&page=${this.page}&rows=${this.rows}`)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           const {status} = res
           if (status !== 200) return false;
           const {rows, total} = res.data
