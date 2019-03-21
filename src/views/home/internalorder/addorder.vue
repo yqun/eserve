@@ -98,7 +98,8 @@
 </template>
 
 <script>
-import Uploader from 'vux-uploader'
+// import Uploader from 'vux-uploader'
+import Uploader from '../../../components/vux-uploader/src/main'
 import { TransferDom } from 'vux'
 import bus from '@/eventbus/eventbus'
 export default {
@@ -117,6 +118,8 @@ export default {
   },
   data() {
     return {
+      orderId: '',
+      orderName: '',
       token: '',
       questionvalue: '', // 问题描述
       nameinfo: '',  // 项目基本信息
@@ -161,12 +164,27 @@ export default {
     this.getporject()
   },
   activated() {
+    this.getOrderData()
     this.getquery()
     bus.$on('sendAddress', address => {
       this.addressvalue = address
     })
   },
   methods: {
+    // 获取提交的id和name
+    getOrderData() {
+      const id = this.$route.query.id
+      const name = this.$route.query.name
+      if (id && name) {
+        window.sessionStorage.setItem('orderId', id)
+        window.sessionStorage.setItem('orderName', name)
+        this.orderId = id
+        this.orderName = name
+      } else {
+        this.orderId = window.sessionStorage.getItem('orderId')
+        this.orderName = window.sessionStorage.getItem('orderName')
+      }
+    },
     // 获取参数
     getquery() {
       const userArr = this.$route.query.user
@@ -202,7 +220,7 @@ export default {
     },
     // 展示 图片
     show (index) {
-      console.log(index)
+      // console.log(index)
       this.$refs.previewer.show(index)
     },
     // 提交按钮
@@ -224,7 +242,10 @@ export default {
         f_salesman_name: this.usernameinfo, // 业务员
         f_project_id: this.ordervalue,
         f_address: this.addressvalue,
-        f_remark: this.remarksvalue
+        f_remark: this.remarksvalue,
+        f_work_order_type_id: this.orderId,
+        f_work_order_type: this.orderName
+
       }
       // console.log(data)
       if (!this.addressvalue || !this.telinfo || !this.nameinfo || !this.usernameinfo || !this.questionvalue) {
@@ -234,7 +255,7 @@ export default {
         this.axios
           .post('workOrder/saveInnerWorkOrder.do', data)
           .then(res => {
-            console.log(res)
+            // console.log(res)
             if (res.data.res == 'true') {
               this.toastShow = true
               this.toastValue = '工单提交成功'

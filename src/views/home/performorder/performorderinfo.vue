@@ -33,9 +33,20 @@
     </group>
     <group title="进度信息" :style="marginBottom" v-if="count.length">
       <timeline class="timeline-demo" v-for="(item,index) in count" :key="index">
-        <timeline-item v-for="(i,index) in item" :key="index">
-          <p :class="[index === 0 ? 'recent' : '']">{{i}}</p>
-        </timeline-item>
+        <!--<timeline-item v-for="(i,index) in item" :key="index">-->
+          <!--<p :class="[index === 0 ? 'recent' : '']" v-if="index != (item.length - 1)">{{i}}</p>-->
+        <!--</timeline-item>-->
+        <timeline-item><p class="recent">{{item.name}}</p></timeline-item>
+        <timeline-item><p>{{item.f_start}}</p></timeline-item>
+        <timeline-item><p>{{item.f_arrive}}</p></timeline-item>
+        <timeline-item><p>{{item.f_return}}</p></timeline-item>
+        <timeline-item><p>{{item.f_leaveDate}}</p></timeline-item>
+        <timeline-item><p>{{item.f_farse}}</p></timeline-item>
+        <timeline-item><p>{{item.f_mileage}}</p></timeline-item>
+        <timeline-item><p>{{item.f_work_house}}</p></timeline-item>
+        <timeline-item><p>{{item.f_remark}}</p></timeline-item>
+        <timeline-item><p>{{item.f_work_content}}</p></timeline-item>
+        <img :src="i.imagesUrl" alt="" v-for="i in item.images" :key="i.id" style="width: 100%;">
       </timeline>
     </group>
     <div class="btnsubmit" v-if="index==0">
@@ -47,7 +58,7 @@
       </flexbox>
       <x-button :gradients="btncolor"
                 style="border-radius: 0"
-                @click.native="$router.push({path:'/writeworkcontent', query: {id: orderId, index: index}})">
+                @click.native="$router.push({path:'/writeworkcontent', query: {id: orderId, index: index,date: finishDate}})">
         填报工作内容
       </x-button>
     </div>
@@ -105,7 +116,9 @@ export default {
       toastValue: '',
       marginBottom: {
         'margin-bottom': '0',
-      }
+      },
+      // 预计完成时间
+      finishDate: '',
     }
   },
   computed: {
@@ -141,6 +154,7 @@ export default {
           // console.log(res)
           const {status, data} = res
           if (status != 200) return false;
+          this.finishDate = data.f_expected_date
           this.orderInfo = data
           if (data.imgIds) {
             data.imgIds.forEach(item => {
@@ -170,24 +184,34 @@ export default {
       this.axios
         .get(`workOrder/findWorkOrerLogs.do?id=${this.orderId}`)
         .then(res => {
-          // console.log(res)
+          console.log(res)
           const {status, data} = res
           if (status != 200) return false;
           if (data.length != 0) {
+            // 处理数据
+            this.count.length = 0
             data.forEach(item => {
-              this.count.push([
-                item.f_handler_name +'　'+ item.f_handle_time,
-                '出发时间：' + item.f_start_date,
-                '到达时间：' + item.f_arrive_date,
-                '离开时间：' + item.f_leave_date,
-                '返回时间：' + item.f_return_date,
-                '交通费用：' + item.f_farse,
-                '行驶里程：' + item.f_mileage,
-                '工时：' + item.f_work_house + '(小时)',
-                '备注：' + item.f_remark,
-                item.f_work_content
-              ])
-            })
+              // 处理图片路径
+              if (item.images) {
+                item.images.forEach(item => {
+                  item.imagesUrl = `${this.axiosUrl}system/getImage.do?id=${item.id}`
+                })
+              }
+              this.count.push({
+                name: item.f_handler_name + '　' + item.f_handle_time,
+                f_start: '出发时间：' +item.f_start_date,
+                f_arrive: '到达时间：' +item.f_arrive_date,
+                f_return: '离开时间：' +item.f_leave_date,
+                f_leaveDate: '返回时间：' +item.f_return_date,
+                f_farse: '交通费用：' +item.f_farse,
+                f_mileage: '行驶里程：' +item.f_mileage,
+                f_work_house: '工时：' +item.f_work_house + '(小时)',
+                f_remark: '备注：' +item.f_remark || '',
+                f_work_content: item.f_work_content,
+                images: item.images
+              })
+            })// data.forEach
+            console.log(this.count)
           }// end if
         })
     },
@@ -274,6 +298,8 @@ export default {
                 this.f_leave = true
                 break;
             }
+            // 刷新页面
+            this.getSchedule()
           } else {
             this.toastValue = res.error
           }

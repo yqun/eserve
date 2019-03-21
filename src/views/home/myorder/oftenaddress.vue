@@ -17,7 +17,6 @@
 
 <script>
 import bus from '@/eventbus/eventbus'
-// import bus from '../../../eventbus/eventbus'
 export default {
   name: "oftenaddress",
   data() {

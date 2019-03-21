@@ -74,7 +74,8 @@
 </template>
 
 <script>
-import Uploader from 'vux-uploader'
+// import Uploader from 'vux-uploader'
+import Uploader from '../../../components/vux-uploader/src/main'
 import { TransferDom } from 'vux'
 import bus from '@/eventbus/eventbus'
 export default {

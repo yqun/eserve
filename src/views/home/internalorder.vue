@@ -8,7 +8,7 @@
       <ul>
         <li class="clearfix"
             v-for="(item,i) in list" :key="item.id"
-            @click="$router.push('/addorder')">
+            @click="$router.push({path: '/addorder', query: {id: item.id, name: item.f_type_name}})">
           <div class="item-pic">
             <img :src="item.imgUrl" alt="">
           </div>

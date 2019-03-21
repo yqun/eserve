@@ -1,7 +1,7 @@
 <template>
   <div class="fixedpadding">
     <x-header style="background-color:dodgerblue;color:#fff;">
-      <span>工单详情</span>
+      <span>填报工作内容</span>
       <x-icon slot="overwrite-left"
               type="ios-arrow-left"
               size="30"
@@ -12,6 +12,7 @@
     <group>
       <datetime
         v-model="finishDate"
+        format="YYYY-MM-DD HH:mm"
         title="预计完成时间">
       </datetime>
     </group>
@@ -58,8 +59,8 @@
                class="radio"
                default-item-class="radio-item"
                selected-item-class="radio-item-selected">
-        <div><checker-item value="false"></checker-item>未完成</div>
-        <div><checker-item value="true"></checker-item>已完成</div>
+        <div><checker-item value="未完成"></checker-item>未完成</div>
+        <div><checker-item value="已完成"></checker-item>已完成</div>
       </checker>
       <!-- 备注 -->
       <x-textarea :max="200"
@@ -84,7 +85,8 @@
 </template>
 
 <script>
-import Uploader from 'vux-uploader'
+// import Uploader from 'vux-uploader'
+import Uploader from '../../../components/vux-uploader/src/main'
 import { TransferDom } from 'vux'
 export default {
   name: "writeworkcontent",
@@ -105,6 +107,7 @@ export default {
       token: '',
       index: 0,
       orderId: 0,
+      id: 0, // 工单进度id
       btncolor: ['dodgerblue', 'dodgerblue'],
       finishDate: '', // 完成时间
       workDate: 0, // 工时
@@ -147,29 +150,33 @@ export default {
     getquery() {
       this.index = this.$route.query.index
       this.orderId = this.$route.query.id
+      const date = this.$route.query.date
+      if (date) {
+        this.finishDate = date
+      }
     },
     // 获取用户之前填写的数据
     getwritedinfo() {
       this.axios
         .get(`orderLog/findOrderLogByWorkOrderAndUserToday.do?f_work_order_id=${this.orderId}`)
         .then(res => {
-          // console.log(res)
+          console.log(res)
           const {orderLog} = res.data
           if (res.data.res == 1) {
+            this.id = orderLog.id
             this.workContent = orderLog.f_work_content
-            this.finishDate = orderLog.f_expected_date, // 预计完成时间
             this.workDate = orderLog.f_work_house, // 工时
             this.transportationCost = orderLog.f_farse, // 交通费用
             this.mileage = orderLog.f_mileage, //行驶里程
-            this.radio = orderLog.f_finished.toString(), // 工单完成情况
-            this.filesId = orderLog.ids, // 图片id
+            this.radio = orderLog.f_finished? '已完成':'未完成', // 工单完成情况
+            // this.filesId = orderLog.ids, // 图片id
             this.textareaval = orderLog.f_remark// 备注
           }
         })
     },
     // 展示 图片
     show (index) {
-      console.log(index)
+      // console.log(index)
       this.$refs.previewer.show(index)
     },
     // 提交表单
@@ -179,49 +186,66 @@ export default {
         // console.log(item)
         this.filesId.push(item.id)
       })
-      console.log(this.filesId)
+      // console.log(this.filesId)
       const data = {
+        id: this.id,
         f_expected_date: this.finishDate, // 预计完成时间
         f_work_content: this.workContent, // 工作内容
         f_work_house: this.workDate, // 工时
         f_farse: this.transportationCost, // 交通费用
         f_mileage: this.mileage, //行驶里程
-        f_finished: this.radio, // 工单完成情况
+        f_completed: this.radio, // 工单完成情况
         ids: this.filesId, // 图片id
         f_remark: this.textareaval, // 备注
       }
       // console.log(data)
       // 判断  必选项
-      if (!this.finishDate || !this.workContent) {
+      if (!this.finishDate) {
         this.toastShow = true
-        this.toastValue = '请填写完整的信息'
-      } else {
-        // 判断 工时大于0  并且是0.5的倍数
-        if (this.workDate > 0 && this.workDate/0.5%1 === 0) {
-          // 判断交通费用和行驶里程
-          if (this.mileage && this.transportationCost) {
-            this.toastShow = true
-            this.toastValue = '交通费用和行驶里程只能任选其一'
-          } else {
-            this.toastShow = true
-            this.toastValue = '提交成功'
-            setTimeout(() => {
-              // 页面跳转
-              this.$router.push({
-                path:'/performorderinfo',
-                query: {
-                  id: this.orderId,
-                  index: this.index
-                }
-              })
-            }, 800) // end setTimeout
-          } // end if
-        } else {
+        this.toastValue = '请填写预计完成时间'
+        return false;
+      }
+      if (!this.radio) {
+        this.toastShow = true
+        this.toastValue = '请填写工单完成情况'
+        return false;
+      }
+      // 判断 工时大于0  并且是0.5的倍数
+      if (this.workDate >= 0 && this.workDate/0.5%1 === 0) {
+        // 判断交通费用和行驶里程
+        if (this.mileage && this.transportationCost) {
           this.toastShow = true
-          this.toastValue = '请正确输入工时'
+          this.toastValue = '交通费用和行驶里程只能任选其一'
+        } else {
+          this.sendData(data)
+
         } // end if
+      } else {
+        this.toastShow = true
+        this.toastValue = '请正确输入工时'
       } // end if
-    } // submitData
+    }, // submitData
+    // 向后台发送数据
+    sendData(data) {
+      this.axios
+        .post(`orderLog/saveOrderLog.do`, data)
+        .then(res => {
+          if (!res.data.res) {
+            return false;
+          }
+          this.toastShow = true
+          this.toastValue = '提交成功'
+          setTimeout(() => {
+            // 页面跳转
+            this.$router.push({
+              path:'/performlist',
+              query: {
+                index: this.index
+              }
+            })
+          }, 800) // end setTimeout
+        })
+    }
   }
 }
 </script>
