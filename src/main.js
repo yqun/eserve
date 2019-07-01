@@ -34,6 +34,7 @@ import { LoadMore  } from 'vux'
 import { Toast } from 'vux'
 import { Confirm } from 'vux'
 import { Alert } from 'vux'
+import  { ToastPlugin } from 'vux'
 
 
 Vue.use(Axios)
@@ -71,6 +72,7 @@ Vue.component('load-more', LoadMore)
 Vue.component('toast', Toast)
 Vue.component('confirm', Confirm)
 Vue.component('alert', Alert)
+Vue.use(ToastPlugin)
 
 // 注册一个全局自定义指令 `v-focus`
 Vue.directive('focus', {

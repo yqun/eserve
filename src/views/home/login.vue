@@ -4,7 +4,7 @@
     <input type="text" placeholder="手机号" v-model="useriphone">
     <input type="password" placeholder="密码" v-model="userpwd">
     <div style="text-align: left; margin-top: 10px;">
-      <check-icon :value.sync="username"  type="plain">记住用户名</check-icon>
+      <check-icon :value.sync="remember"  type="plain">记住用户名</check-icon>
     </div>
     <x-button :gradients="['#8acffe', '#2A91D8']" @click.native="login()">登录</x-button>
     <div class="footer">北京金山顶尖科技股份有限公司</div>
@@ -23,38 +23,51 @@ export default {
     return {
       useriphone: '',
       userpwd: '',
-      username: false,
+      remember: false,
       // toast
       toastShow: false,
       toastValue: ''
     }
   },
+  created() {
+    const userStr = window.localStorage.getItem('user')
+    if (userStr) {
+      const userInfo  = JSON.parse(userStr)
+      this.useriphone = userInfo.useriphone
+      this.userpwd    = userInfo.userpwd
+      this.remember   = userInfo.remember
+    }
+  },
   methods: {
     // 登录
     login() {
+      if (!this.useriphone.trim()) return this.$vux.toast.text('请输入用户名')
+      if (!this.userpwd.trim()) return this.$vux.toast.text('请输入密码')
       const data = {
         f_phone_num: this.useriphone,
         f_pwd: this.userpwd
       }
-      this
-        .axios.post('user/mobile_logIn.do', data)
+      this.axios
+        .post('user/mobile_logIn.do', data)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           const {state, token, roles} = res.data
-          if (state === 1) {
-            // 成功
-            const {id} = res.data
-            const rolesStr = JSON.stringify(roles)
-            window.sessionStorage.setItem('token', token)
-            window.sessionStorage.setItem('id', id)
-            window.sessionStorage.setItem('roles', rolesStr)
-            this.$router.push('/internalorder')
+          if (state !== 1) return this.$vux.toast.text('res.data.info')
+          // 成功
+          const {id} = res.data
+          const rolesStr = JSON.stringify(roles)
+          window.sessionStorage.setItem('token', token)
+          window.sessionStorage.setItem('id', id)
+          window.sessionStorage.setItem('roles', rolesStr)
+          // 用户名  密码
+          if(this.remember) {
+            const user = {useriphone: this.useriphone, userpwd: this.userpwd, remember: true}
+            window.localStorage.setItem('user', JSON.stringify(user))
           } else {
-            // 失败
-            const {info} = res.data
-            this.toastShow = true
-            this.toastValue = info
+            const userStr = window.localStorage.getItem('user')
+            if (userStr) window.localStorage.removeItem('user')
           }
+          this.$router.push('/internalorder')
         })
     }
   }
