@@ -15,14 +15,19 @@
         <i class="iconfont icon-icon02" slot="icon-active" style="color: orange"></i>
         <span slot="label">指派工单</span>
       </tabbar-item>
+      <tabbar-item link="/confirmorder" v-if="confirmorder">
+        <i class="iconfont icon-gongdan" slot="icon"></i>
+        <i class="iconfont icon-gongdan" slot="icon-active" style="color: orange"></i>
+        <span slot="label">确认工单</span>
+      </tabbar-item>
       <tabbar-item link="/performorder" v-if="performorder">
         <i class="iconfont icon-fl-banzi" slot="icon"></i>
         <i class="iconfont icon-fl-banzi" slot="icon-active" style="color: orange"></i>
         <span slot="label">执行工单</span>
       </tabbar-item>
       <tabbar-item link="/internalorder">
-        <i class="iconfont icon-gongdan" slot="icon"></i>
-        <i class="iconfont icon-gongdan" slot="icon-active" style="color: orange"></i>
+        <i class="iconfont icon-xiangmuliebiao" slot="icon"></i>
+        <i class="iconfont icon-xiangmuliebiao" slot="icon-active" style="color: orange"></i>
         <span slot="label">内部工单</span>
       </tabbar-item>
       <tabbar-item link="/personal">
@@ -42,7 +47,8 @@ export default {
       index: 1,
       roles: [], // 用户权限
       assignedorder: false,
-      performorder: false
+      performorder: false,
+      confirmorder: false
     }
   },
   created() {
@@ -55,7 +61,7 @@ export default {
       const rolesStr = window.sessionStorage.getItem('roles')
       this.roles = JSON.parse(rolesStr)
       this.roles.forEach(item => {
-        if (item.id == 6) {
+        if (item.id == 6 || item.id == 4) {
           this.assignedorder = true
           // this.index++
         }
@@ -63,12 +69,22 @@ export default {
           this.performorder = true
           // this.index++
         }
+        if (item.id == 7) {
+          this.confirmorder = true
+        }
       })
     },
     // 判断 进首页时的路由 判断底部tabbar
     getRouterPath() {
+      let arr = []
+      // assignedorder performorder confirmorder
+      if (this.assignedorder) arr.push(true)
+      if (this.performorder) arr.push(true)
+      if (this.confirmorder) arr.push(true)
+      // this.index+=arr.length
       const routerpath = this.$route.path
-      // console.log(routerpath)
+      // console.log(this.assignedorder)
+      console.log(routerpath)
       switch(routerpath) {
         case '/myorder':
           this.index = 0
@@ -76,25 +92,29 @@ export default {
         case '/listItem':
           this.index = 1
         break;
-        case '/performlist':
-          if (this.assignedorder == true) {
-            this.index = 2
-          } else {
+        case '/confirmlist':
+          if (!this.assignedorder) {
             this.index = 1
+          } else {
+            this.index = 2
           }
         break;
-        case '/internalorder':
+        case '/performlist':
           // 如果两个中  有正确的 this.index = 2
-          if(this.assignedorder == true || this.performorder == true) {
+          if(this.assignedorder == true || this.confirmorder == true) {
             this.index = 2
             // 如果两个都正确  this.index = 3
-            if (this.assignedorder == true && this.performorder == true)  {
+            if (this.assignedorder == true && this.confirmorder == true)  {
               this.index = 3
             }
           } else {
             // 如果两个都不正确 this.index = 1
             this.index = 1
           }
+        break;
+        case '/internalorder':
+          // 判断之前几个存在
+          this.index+=arr.length
         break;
       }
       // console.log(this.index)

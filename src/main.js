@@ -8,6 +8,7 @@ import FileUpload from 'vue-upload-component'
 import Axios from './request/config'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import store from '@/store/store'
 
 // 全局css
 import './assets/css/comment.css'
@@ -87,6 +88,7 @@ Vue.directive('focus', {
 new Vue({
   el: '#app-box',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

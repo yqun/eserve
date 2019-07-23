@@ -26,7 +26,7 @@ export default {
       remember: false,
       // toast
       toastShow: false,
-      toastValue: ''
+      toastValue: '',
     }
   },
   created() {

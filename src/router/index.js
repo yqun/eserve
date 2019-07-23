@@ -24,6 +24,11 @@ import Performlist from '@/views/home/performorder/Performlist' // 执行工单
 import Performorderinfo from '@/views/home/performorder/performorderinfo' // performorderinfo工单详情
 import Writeworkcontent from '@/views/home/performorder/writeworkcontent' // 填写工作内容
 
+import Confirmorder from '@/views/home/confirmorder' // 确认工单
+import Confirmlist from '@/views/home/confirmorder/confirmlist' // 确认工单列表
+import Confirminfo from '@/views/home/confirmorder/confirminfo' // 确认工单列表
+
+
 import Personal from '@/views/home/personal' // 个人中心
 import Userinfo from '@/views/home/personal/userinfo' // 个人中心 主页
 import Updatephone from '@/views/home/personal/updatephone' // 修改手机号
@@ -61,6 +66,15 @@ const router = new Router ({
             {path: '/performlist', name: 'performlist', component: Performlist}
           ]
         },
+        { // 确认工单
+          path: '/confirmorder',
+          name:'confirmorder',
+          component: Confirmorder,
+          redirect: {path: '/confirmlist', name: 'confirmlist', component: Confirmlist},
+          children: [
+            {path: '/confirmlist', name: 'confirmlist', component: Confirmlist}
+          ]
+        },
       ]
     },
     {
@@ -76,7 +90,7 @@ const router = new Router ({
     },
     {
       path: '/ordersubmitview',
-        name:'ordersubmitview',
+      name:'ordersubmitview',
       component: Ordersubmitview,
       redirect: {path: '/ordersubmit', name:'ordersubmit', component: Ordersubmit},
       children: [
@@ -102,6 +116,7 @@ const router = new Router ({
     {path: '/performorderinfo',  name:'performorderinfo', component: Performorderinfo},
     {path: '/login', name:'login', component: Login},
     {path: '/writeworkcontent', name:'writeworkcontent', component: Writeworkcontent},
+    {path: '/confirminfo', name:'confirminfo', component: Confirminfo},
   ]
 })
 

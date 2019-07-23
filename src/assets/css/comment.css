@@ -1,5 +1,5 @@
 /* 主题内容左右边距 */
-.content {
+.content ul {
   padding: 0 10px;
 }
 /* 顶部固定定位 返回 上内边距*/
