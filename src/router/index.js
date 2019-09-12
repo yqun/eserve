@@ -35,6 +35,8 @@ import Updatephone from '@/views/home/personal/updatephone' // 修改手机号
 import Updatepassword from '@/views/home/personal/updatepassword' // 修改密码
 
 import Login from '@/views/home/login'  // 登录
+import Error from '@/views/home/error' // 错误
+
 
 Vue.use(Router)
 
@@ -110,7 +112,8 @@ const router = new Router ({
         {path: '/myorderlistitem', name: 'myorderlistitem', component: Myorderlistitem}
       ]
     },
-    {path: '/estimate',     name:'estimate',    component: Estimate},
+    {path: '/error', name:'error', component: Error},
+    {path: '/estimate', name:'estimate', component: Estimate},
     {path: '/myorderlistiteminfo/:id', name:'myorderlistiteminfo', component: Myorderlistiteminfo},
     {path: '/assignedorderinfo', name:'assignedorderinfo', component: Assignedorderinfo},
     {path: '/performorderinfo',  name:'performorderinfo', component: Performorderinfo},
@@ -120,21 +123,15 @@ const router = new Router ({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   router.path = from.path
-//   next()
-//
-// })
 // 在跳转之前会触发拦截
 router.beforeEach((to, from, next) => {
-  // console.log(to, from)
   router.path = from.path
-  if (to.path === '/login') {
+  if (to.path === '/internalorder' || to.path === '/error') {
     next()
   } else {
     const token = sessionStorage.getItem('token')
     if (!token) {
-      router.push('/login')
+      router.push('/internalorder')
     } else {
       next()
     }

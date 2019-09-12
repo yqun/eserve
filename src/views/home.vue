@@ -3,8 +3,8 @@
     <div class="header">
       e服务
     </div>
-    <router-view></router-view>
-    <tabbar v-model="index">
+    <router-view @haveToken="getToken"></router-view>
+    <tabbar v-model="index" :key="index">
       <tabbar-item link="/myorder">
         <i class="iconfont icon-fl-jia" slot="icon"></i>
         <i class="iconfont icon-fl-jia" slot="icon-active" style="color: orange"></i>
@@ -51,15 +51,22 @@ export default {
       confirmorder: false
     }
   },
-  created() {
-    this.getUser()
-    this.getRouterPath()
+  mounted() {
+    if (window.sessionStorage.getItem('token')) {
+      this.getUser()
+      this.getRouterPath()
+    }
   },
   methods: {
+    getToken() {
+      this.getUser()
+      this.getRouterPath()
+    },
     // 获取  用户权限
     getUser() {
       const rolesStr = window.sessionStorage.getItem('roles')
       this.roles = JSON.parse(rolesStr)
+      console.log(rolesStr)
       this.roles.forEach(item => {
         if (item.id == 6 || item.id == 4) {
           this.assignedorder = true
@@ -102,7 +109,7 @@ export default {
         case '/performlist':
           // 如果两个中  有正确的 this.index = 2
           if(this.assignedorder == true || this.confirmorder == true) {
-            this.index = 2
+            this.index = 4
             // 如果两个都正确  this.index = 3
             if (this.assignedorder == true && this.confirmorder == true)  {
               this.index = 3

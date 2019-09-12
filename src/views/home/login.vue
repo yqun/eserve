@@ -52,7 +52,7 @@ export default {
         .then(res => {
           // console.log(res)
           const {state, token, roles} = res.data
-          if (state !== 1) return this.$vux.toast.text('res.data.info')
+          if (state !== 1) return this.$vux.toast.text(res.data.info)
           // 成功
           const {id} = res.data
           const rolesStr = JSON.stringify(roles)

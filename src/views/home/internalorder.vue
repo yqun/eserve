@@ -34,25 +34,53 @@ export default {
     }
   },
   created() {
-    this.getOrderInfo()
+    // this.getOrderInfo()
+    this.getToken()
   },
   methods: {
-    onScrollBottom() {
+    onScrollBottom() {},
+    getToken() {
+      const token = window.sessionStorage.getItem('token')
+      const id = window.sessionStorage.getItem('id')
+      const roles = window.sessionStorage.getItem('roles')
+      if (token && id && roles) {
+        this.getOrderInfo()
+      } else {
+        const userId = this.$route.query.userId;
+        // const userId = window.location.search.split('&')[0].split('=')[1] || 'liwanlong';
+        this.axios
+          .get(`user/getToken.do?userId=${userId}`)
+          .then(res => {
+            // console.log(res);
+            const {state} = res.data
+            if (state !== 1) return this.$vux.toast.text(res.data.info)
+            // 成功
+            const {id, token, roles} = res.data
+            const rolesStr = JSON.stringify(roles)
+            window.sessionStorage.setItem('token', token)
+            window.sessionStorage.setItem('id', id)
+            window.sessionStorage.setItem('roles', rolesStr)
 
+            this.$emit('haveToken') // 监听获取成功token
+
+            this.getOrderInfo()
+          })
+      }
     },
     // 获取工单信息
     getOrderInfo() {
       this.axios
         .get('/workOrderType/findEntityByPage.do')
         .then(res => {
-          // console.log(res)
+          console.log(res)
           const {status} = res
           if (status !== 200) return false;
           const {rows} = res.data
           this.list = rows
-          this.list.forEach((item,index) => {
-            this.list[index].imgUrl = `${this.axiosUrl}system/getImage.do?id=${item.f_image_id}`
-          })
+          // if (!this.list.length) return false;
+          // this.list.forEach((item,index) => {
+          //   this.list[index].imgUrl = `${this.axiosUrl}system/getImage.do?id=${item.f_image_id}`
+          // })
         })
     },
   }
