@@ -96,7 +96,7 @@ export default {
       this.axios
         .get(`workOrder/findEntityById.do?id=${this.orderId}`)
         .then(res => {
-          // console.log(res)
+          console.log(res)
           const {status, data} = res
           if (status != 200) return false;
           this.orderInfo = data
@@ -128,7 +128,7 @@ export default {
       this.axios
         .get(`workOrder/findWorkOrerLogs.do?id=${this.orderId}`)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           const {status, data} = res
           if (status != 200) return false;
           if (data.length != 0) {

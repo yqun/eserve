@@ -67,7 +67,7 @@
                v-model="usernameinfo"
                placeholder="选择业务员"
                text-align="right"
-               @on-focus="$router.push({path: '/salesman', query: {userId: 1}})"></x-input>
+               @click.native="toSalesman()"></x-input>
       <selector title="所属项目"
                 direction="rtl"
                 :options="order"
@@ -190,8 +190,10 @@ export default {
       const userArr = this.$route.query.user
       if (!userArr) return false;
       const jsonData = JSON.parse(userArr)
-      this.usernameinfo = jsonData[0].name
-      this.usernameId = jsonData[0].id
+      if (jsonData.length > 0) {
+        this.usernameinfo = jsonData[0].name
+        this.usernameId = jsonData[0].id
+      }
     },
     // 路由跳转
     routerLink() {
@@ -268,8 +270,12 @@ export default {
       }
 
 
+    },
+    // 跳转选择业务员
+    toSalesman() {
+      this.$store.commit('changeSalesmanBackRouter', this.$route.path)
+      this.$router.push({path: '/salesman', query: {userId: 1}})
     }
-
   }
 }
 </script>

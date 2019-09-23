@@ -77,10 +77,9 @@ export default {
           if (status !== 200) return false;
           const {rows} = res.data
           this.list = rows
-          // if (!this.list.length) return false;
-          // this.list.forEach((item,index) => {
-          //   this.list[index].imgUrl = `${this.axiosUrl}system/getImage.do?id=${item.f_image_id}`
-          // })
+          this.list.forEach((item,index) => {
+            this.list[index].imgUrl = `${this.axiosUrl}system/getImage.do?id=${item.f_image_id}`
+          })
         })
     },
   }

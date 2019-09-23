@@ -44,7 +44,7 @@ export default {
   name: "home",
   data() {
     return {
-      index: 1,
+      index: -1,
       roles: [], // 用户权限
       assignedorder: false,
       performorder: false,
@@ -66,15 +66,12 @@ export default {
     getUser() {
       const rolesStr = window.sessionStorage.getItem('roles')
       this.roles = JSON.parse(rolesStr)
-      console.log(rolesStr)
       this.roles.forEach(item => {
         if (item.id == 6 || item.id == 4) {
           this.assignedorder = true
-          // this.index++
         }
         if (item.id == 8) {
           this.performorder = true
-          // this.index++
         }
         if (item.id == 7) {
           this.confirmorder = true
@@ -88,10 +85,8 @@ export default {
       if (this.assignedorder) arr.push(true)
       if (this.performorder) arr.push(true)
       if (this.confirmorder) arr.push(true)
-      // this.index+=arr.length
       const routerpath = this.$route.path
-      // console.log(this.assignedorder)
-      console.log(routerpath)
+      // console.log(routerpath)
       switch(routerpath) {
         case '/myorder':
           this.index = 0
@@ -121,7 +116,7 @@ export default {
         break;
         case '/internalorder':
           // 判断之前几个存在
-          this.index+=arr.length
+          this.index=arr.length+1
         break;
       }
       // console.log(this.index)

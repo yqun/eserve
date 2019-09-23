@@ -7,18 +7,13 @@
         lazy
         :load="loadNode"
         @check="chooseCheck"
+        @node-click="clicknode"
         node-key="id"
         ref="tree"
         :props="defaultProps">
       </el-tree>
     </div>
     <x-button class="btnsubmit" :gradients="btncolor" @click.native="senduser()">确定选择</x-button>
-    <!-- toast -->
-    <toast v-model="toastShow"
-           :text="toastValue"
-           type="text" :time="800"
-           is-show-mask
-           position="middle" width="10em"></toast>
   </div>
 </template>
 
@@ -42,27 +37,31 @@ export default {
       },
       newData: [],
       chooseUser: [], // 选择的业务员
-      // toast
-      toastShow: false,
-      toastValue: ''
     }
   },
   created() {
-    this.getquery()
-  },
-  computed: {
-
+    this.orderId = this.$route.query.id
+    this.index = this.$route.query.index
+    this.userId = this.$route.query.userId
+    this.routerPath = this.$router.path // 跳转进来的路由
   },
   methods: {
-    // 获取参数
-    getquery() {
-      this.orderId = this.$route.query.id
-      this.index = this.$route.query.index
-      this.userId = this.$route.query.userId
+    clicknode(obj, node) {
+      // console.log(obj, node)
+      const tree = this.$refs.tree
+      let checkedKeys = tree.getCheckedKeys()
+      if (this.userId == 1 && checkedKeys.length > 0 && !node.checked) return this.$vux.toast.text('最多选择一个业务员');
+      if (!node.checked) {
+        checkedKeys.push(obj.id)
+      } else {
+        checkedKeys = checkedKeys.filter((item) => item != obj.id)
+      }
+      tree.setCheckedKeys(checkedKeys)
     },
     // 返回设置
     senduser() {
-      if (this.chooseUser.length > 1 && this.userId == 1) return this.toastShow = true; this.toastValue = '最多选择一个业务员'
+      this.chooseUser = this.$refs.tree.getCheckedNodes()
+      if (this.userId == 1 && this.chooseUser.length > 1) return this.$vux.toast.text('最多选择一个业务员');
       let userArr = [];
       this.chooseUser.forEach(item => {
         if (item.state == "closed") return false;
@@ -72,7 +71,7 @@ export default {
       console.log(jsonData)
       // 页面跳转
       this.$router.push({
-        path: this.$router.path,
+        path: this.$store.state.salesmanBackRouter,
         query: {
           id: this.orderId,
           index: this.index,
@@ -108,18 +107,13 @@ export default {
             resolve([]);
           }
           // const Sdata = data
-          setTimeout(() => {
-            resolve(data);
-          }, 500);
+          setTimeout(() => {resolve(data);}, 500);
         })
     },
     // 选择多选框
     chooseCheck() {
       this.chooseUser = this.$refs.tree.getCheckedNodes()
-      if (this.chooseUser.length > 1 && this.userId == 1) {
-        this.toastShow = true
-        this.toastValue = '最多选择一个业务员'
-      }
+      if (this.chooseUser.length > 1 && this.userId == 1) this.$vux.toast.text('最多选择一个业务员');
     }
   }
 }
