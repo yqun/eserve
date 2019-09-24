@@ -5,7 +5,7 @@
       <x-icon slot="overwrite-left"
               type="ios-arrow-left"
               size="30"
-              @click="$router.push({path: '/confirmlist'})"
+              @click="$router.push('/confirmlist')"
               style="fill:#fff;position:relative;top:-5px;left:-3px;"></x-icon>
     </x-header>
     <group title="基本信息" >
@@ -50,7 +50,6 @@ export default {
   name: "confirminfo",
   data () {
     return {
-      id: 0,
       orderInfo: {},
       f_name: '', //指派人员
       count: [],
@@ -58,6 +57,9 @@ export default {
     }
   },
   computed: {
+    id() {
+      return this.$store.state.orderId
+    },
     f_confirmed() {
       if (this.orderInfo.f_confirmed == true) {
         return '已确认'
@@ -66,16 +68,11 @@ export default {
       }
     }
   },
-  created() {
-    this.getquery()
+  mounted() {
     this.getOrderInfo()
     this.getUser()
   },
   methods: {
-    // 获取参数
-    getquery() {
-      this.id = this.$route.query.id
-    },
     // 获取工单详情
     getOrderInfo() {
       this.axios
@@ -112,7 +109,7 @@ export default {
       this.axios
         .get(`workOrder/confirmOrder.do?id=${this.id}`)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           if (!res.data.res) return this.$vux.toast.show('确认失败')
           this.$vux.toast.show('确认成功')
           this.$router.push('/confirmlist')

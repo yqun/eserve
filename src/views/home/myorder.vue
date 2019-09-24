@@ -2,7 +2,7 @@
   <div class="content">
     <i class="iconfont icon-jiahao" @click="$router.push('/ordersubmit')"></i>
     <!-- 导航 -->
-    <nav-bar @sendIndex="getIndex" :index="index"></nav-bar>
+    <nav-bar></nav-bar>
     <!-- 内容 -->
     <ul>
       <li class="item-content"
@@ -21,31 +21,23 @@ export default {
   name: "myorder",
   data() {
     return {
-      index: 0,
       list: [],
     }
   },
-  created() {
-    this.getquery()
+  beforeRouteLeave(to, form, next) {
+    if(to.name !== 'myorderlistitem') {
+      this.$store.commit('changeNavIndex', 0)
+    }
+    next();
+  },
+  mounted() {
     this.getMyorder()
   },
   methods: {
-    // 获取参数index
-    getquery() {
-      this.index = this.$route.query.index || 0
-    },
-    getIndex(index) {
-      this.index = index
-    },
     routerLink(id) {
       // console.log(id)
-      this.$router.push({
-        path: '/myorderlist',
-        query: {
-          id: id,
-          index: this.index
-        }
-      })
+      this.$store.commit('changeServiceId', id)
+      this.$router.push('/myorderlist')
     },
     // 获取我的工单信息
     getMyorder() {

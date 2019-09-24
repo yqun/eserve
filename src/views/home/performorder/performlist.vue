@@ -5,9 +5,7 @@
             :scroll-bottom-offst="200"
             style="box-sizing: border-box; padding-top: 0px;padding-bottom: 15px;">
     <ul>
-      <li class="clearfix"
-          @click="$router.push({path: `/performorderinfo`, query: {id: item.id, index: index}})"
-          v-for="(item) in list" :key="item.id">
+      <li class="clearfix" v-for="(item) in list" :key="item.id" @click="toPerformOrderInfo(item)">
         <div class="item-content">
           <h3>问题：{{item.f_description}}</h3>
           <p>客户：{{item.f_customer_name}}({{item.f_customer_phnum}})</p>
@@ -25,7 +23,6 @@
 <script>
   export default {
     name: "listitem",
-    props:['index'],
     data() {
       return {
         list: [],
@@ -36,12 +33,23 @@
         flag: true,
       }
     },
+    beforeRouteLeave(to, form, next) {
+      if (to.name !== 'performorderinfo') {
+        this.$store.commit('changeNavIndex', 0)
+      }
+      next()
+    },
+    computed:{
+      index() {
+        return this.$store.state.navIndex;
+      }
+    },
     watch: {
       index(newVal, oldVal) {
         this.getIndex(newVal)
       }
     },
-    created () {
+    mounted () {
       this.getIndex(this.index)
     },
     methods: {
@@ -50,22 +58,18 @@
         this.page = 1;
         if (index == 0) {
           this.status = '待完成'
-          this.getWait()
         } else if (index == 1) {
           this.status = '已完成'
-          this.getWait()
         } else if (index == 2) {
           this.status = '已取消'
-          this.getWait()
         }
+        this.getWait()
       },
       onScrollBottom() {
         if (!this.flag || this.pageTotal < this.page) return false;
         this.flag = false
         this.getWait()
-        setTimeout(() => {
-          this.flag = true
-        }, 2000)
+        setTimeout(() => {this.flag = true}, 2000)
       },
       // 获取带指派
       getWait() {
@@ -82,6 +86,10 @@
             this.pageTotal = Math.ceil(total/10)
             this.page++;
           })
+      },
+      toPerformOrderInfo(info) {
+        this.$store.commit('changeOrderId', info.id)
+        this.$router.push('/performorderinfo')
       }
     }
   }

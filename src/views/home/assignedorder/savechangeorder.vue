@@ -5,7 +5,7 @@
       <x-icon slot="overwrite-left"
               type="ios-arrow-left"
               size="30"
-              @click="$router.push({path: '/assignedorderinfo', query: {id: orderId, index: index}})"
+              @click="$router.push('/assignedorderinfo')"
               style="fill:#fff;position:relative;top:-5px;left:-3px;"></x-icon>
     </x-header>
     <group>
@@ -50,8 +50,6 @@ export default {
   name: "savechangeorder",
   data() {
     return{
-      orderId: 0,
-      index:0,
       userId: 0,// 判断业务员  还是 指派人员
       btncolor: ['dodgerblue', 'dodgerblue'],
       // 数据
@@ -72,8 +70,12 @@ export default {
       f_nameId:[],
     }
   },
-  created() {
-    this.getquery()
+  computed: {
+    orderId() {
+      return this.$store.state.orderId
+    }
+  },
+  mounted() {
     this.getOrderInfo()
 
     this.getassets()
@@ -99,11 +101,6 @@ export default {
     }
   },
   methods: {
-    // 获取参数
-    getquery() {
-      this.orderId = this.$route.query.id
-      this.index = this.$route.query.index
-    },
     // 获取资产类别
     getassets() {
       this.axios
@@ -163,7 +160,7 @@ export default {
       this.axios
         .get(`workOrder/getWorkersByWorkOrder.do?id=${this.orderId}`)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           const {status, data} = res
           if (status != 200) return false;
           if (data.length != 0) {
@@ -232,8 +229,6 @@ export default {
       this.$router.push({
         path: '/salesman',
         query: {
-          id: this.orderId,
-          index: this.index,
           userId: userId
         }
       })

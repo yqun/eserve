@@ -5,7 +5,7 @@
       <x-icon slot="overwrite-left"
               type="ios-arrow-left"
               size="30"
-              @click="$router.push({path: '/performorder', query: {index: index}})"
+              @click="$router.push('/performorder')"
               style="fill:#fff;position:relative;top:-5px;left:-3px;"></x-icon>
     </x-header>
     <group title="基本信息">
@@ -58,7 +58,7 @@
       </flexbox>
       <x-button :gradients="btncolor"
                 style="border-radius: 0"
-                @click.native="$router.push({path:'/writeworkcontent', query: {id: orderId, index: index,date: finishDate}})">
+                @click.native="$router.push({path:'/writeworkcontent', query: {date: finishDate}})">
         填报工作内容
       </x-button>
     </div>
@@ -94,8 +94,6 @@ export default {
   name: "performorderinfo",
   data () {
     return {
-      index: 0,
-      orderId: 0,
       orderInfo: {},
       f_name: '',
       count: [],
@@ -122,6 +120,12 @@ export default {
     }
   },
   computed: {
+    index() {
+      return this.$store.state.navIndex
+    },
+    orderId() {
+      return this.$store.state.orderId;
+    },
     f_confirmed() {
       if (this.orderInfo.f_confirmed == true) {
         return '已确认'
@@ -130,8 +134,7 @@ export default {
       }
     }
   },
-  created() {
-    this.getquery()
+  mounted() {
     this.getOrderInfo()
     this.getUser()
     this.getSchedule()
@@ -141,11 +144,6 @@ export default {
     }
   },
   methods: {
-    // 获取参数
-    getquery() {
-      this.index = this.$route.query.index
-      this.orderId = this.$route.query.id
-    },
     // 获取工单详情
     getOrderInfo() {
       this.axios

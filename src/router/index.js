@@ -114,7 +114,7 @@ const router = new Router ({
     },
     {path: '/error', name:'error', component: Error},
     {path: '/estimate', name:'estimate', component: Estimate},
-    {path: '/myorderlistiteminfo/:id', name:'myorderlistiteminfo', component: Myorderlistiteminfo},
+    {path: '/myorderlistiteminfo', name:'myorderlistiteminfo', component: Myorderlistiteminfo},
     {path: '/assignedorderinfo', name:'assignedorderinfo', component: Assignedorderinfo},
     {path: '/performorderinfo',  name:'performorderinfo', component: Performorderinfo},
     {path: '/login', name:'login', component: Login},

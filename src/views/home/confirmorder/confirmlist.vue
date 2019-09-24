@@ -6,7 +6,7 @@
             style="box-sizing: border-box; padding-top: 0px;padding-bottom: 15px;">
     <ul>
       <li class="clearfix"
-          @click="$router.push({path: `/confirminfo`, query: {id: item.id}})"
+          @click="toConfirmInfo(item)"
           v-for="(item) in list" :key="item.id">
         <div class="item-content">
           <h3>问题：{{item.f_description}}</h3>
@@ -37,6 +37,12 @@
         flag: true,
       }
     },
+    beforeRouteLeave(to,form, next) {
+      if (to.name !== 'confirminfo') {
+        this.$store.commit('changeNavIndex', 0)
+      }
+      next()
+    },
     computed: {
       ...mapState(['navIndex']),
     },
@@ -45,7 +51,7 @@
         this.getIndex(newVal)
       }
     },
-    created () {
+    mounted () {
       this.getWait()
     },
     methods: {
@@ -53,9 +59,7 @@
         if (!this.flag || this.pageTotal < this.page) return false;
         this.flag = false
         this.getWait()
-        setTimeout(() => {
-          this.flag = true
-        }, 2000)
+        setTimeout(() => {this.flag = true}, 2000)
       },
       getIndex(index) {
         this.list.length = 0;
@@ -93,6 +97,10 @@
             this.pageTotal = Math.ceil(total/10)
             this.page++;
           })
+      },
+      toConfirmInfo(info) {
+        this.$store.commit('changeOrderId', info.id)
+        this.$router.push('/confirminfo')
       }
     }
   }

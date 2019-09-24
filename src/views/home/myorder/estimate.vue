@@ -5,7 +5,7 @@
       <x-icon slot="overwrite-left"
               type="ios-arrow-left"
               size="30"
-              @click="$router.push({path: '/myorderlistitem', query: {index: index, id:id}})"
+              @click="$router.push('/myorderlistitem')"
               style="fill:#fff;position:relative;top:-5px;left:-3px;"></x-icon>
     </x-header>
     <checker v-model="radio"
@@ -42,9 +42,6 @@ export default {
   name: "estimate",
   data() {
     return {
-      id: 0,
-      index: 0,
-      orderId: 0,
       radio: '满意',
       textareaval: '',
       appraise: {}, //评价
@@ -53,18 +50,18 @@ export default {
       toastValue: ''
     }
   },
+  computed: {
+    orderId() {
+      return this.$store.state.orderId
+    }
+  },
   created() {
-    this.getquery()
+    this.appraise = this.$route.query.appraise
+  },
+  mounted() {
     this.setevaluate()
   },
   methods: {
-    // 获取参数
-    getquery() {
-      this.id = this.$route.query.id
-      this.index = this.$route.query.index
-      this.orderId = this.$route.query.orderId
-      this.appraise = this.$route.query.appraise
-    },
     // 渲染页面
     setevaluate() {
       this.radio = this.appraise.f_appraise || '满意'
@@ -82,7 +79,7 @@ export default {
       this.axios
         .post('appraise/saveAppraise.do', data)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           const {status, data:{state}} = res
           if (status != 200) return false;
           if (state == 1) {
@@ -91,10 +88,6 @@ export default {
             setTimeout(function () {
               _that.$router.push({
                 path: '/myorderlistitem',
-                query: {
-                  index: _that.index,
-                  id:_that.id
-                }
               })
             }, 800)
           } else {

@@ -6,7 +6,7 @@
             style="box-sizing: border-box; padding-top: 0px;padding-bottom: 15px;">
     <ul>
       <li class="clearfix"
-          @click="$router.push({path: `/assignedorderinfo`, query: {index: index, id:item.id}})"
+          @click="toAssignedOrderInfo(item)"
           v-for="(item) in list" :key="item.id">
         <div class="item-content">
           <h3>问题：{{item.f_description}}</h3>
@@ -25,7 +25,6 @@
 <script>
 export default {
   name: "listitem",
-  props:['index'],
   data() {
     return {
       list: [],
@@ -36,28 +35,27 @@ export default {
       flag: true,
     }
   },
+  computed: {
+    index() {
+      return this.$store.state.navIndex
+    }
+  },
   watch: {
     index(newVal, oldVal) {
       this.getIndex(newVal)
     }
   },
-  created () {
+  mounted () {
     this.getIndex(this.index)
   },
   methods: {
     getIndex(index) {
       this.list.length = 0;
       this.page = 1;
-      if (index == 0) {
-        this.status = '未指派'
-        this.getWait()
-      } else if (index == 1) {
-        this.status = '已指派'
-        this.getWait()
-      } else if (index == 2) {
-        this.status = '已取消'
-        this.getWait()
-      }
+      if (index == 0) {this.status = '未指派'}
+      else if (index == 1) {this.status = '已指派'}
+      else if (index == 2) {this.status = '已取消'}
+      this.getWait()
     },
     onScrollBottom() {
       if (!this.flag || this.pageTotal < this.page) return false;
@@ -82,6 +80,10 @@ export default {
           this.pageTotal = Math.ceil(total/10)
           this.page++;
         })
+    },
+    toAssignedOrderInfo(info) {
+      this.$store.commit('changeOrderId', info.id)
+      this.$router.push('/assignedorderinfo')
     }
   }
 }

@@ -6,7 +6,7 @@
             style="box-sizing: border-box; padding-top: 0px;padding-bottom: 15px;">
     <ul>
       <li class="clearfix"
-          @click="$router.push({path: `/myorderlistiteminfo/${item.id}`, query: {id: id, index: index}})"
+          @click="toMyorderListItemInfo(item)"
           v-for="item in list" :key="item.id">
         <div class="item-content">
           <h3>问题：{{item.f_description}}</h3>
@@ -27,7 +27,6 @@
 <script>
 export default {
   name: "myorderlistitem",
-  props:['index', 'id'],
   data() {
     return {
       list: [],
@@ -38,12 +37,20 @@ export default {
       flag: true,
     }
   },
+  computed: {
+    index() {
+      return this.$store.state.navIndex;
+    },
+    id() { // 服务单位id
+      return this.$store.state.serviceId
+    }
+  },
   watch: {
     index(newVal, oldVal) {
       this.getIndex(newVal)
     }
   },
-  created () {
+  mounted () {
     this.getIndex(this.index)
   },
   methods: {
@@ -52,14 +59,12 @@ export default {
       this.page = 1;
       if (index == 0) {
         this.status = '待完成'
-        this.getWait()
       } else if (index == 1) {
         this.status = '已完成'
-        this.getWait()
       } else if (index == 2) {
         this.status = '已取消'
-        this.getWait()
       }
+      this.getWait()
     },
     onScrollBottom() {
       if (!this.flag || this.pageTotal < this.page) return false;
@@ -74,7 +79,7 @@ export default {
       this.axios
         .get(`workOrder/findEntityByPage.do?f_handler_org_id=${this.id}&f_work_order_state=${this.status}&page=${this.page}&rows=${this.rows}`)
         .then(res => {
-          // console.log(res)
+          console.log(res)
           const {status} = res
           if (status !== 200) return false;
           const {rows, total} = res.data
@@ -85,14 +90,15 @@ export default {
           this.page++;
         })
     },
+    toMyorderListItemInfo(info) {
+      this.$store.commit('changeOrderId', info.id)
+      this.$router.push(`/myorderlistiteminfo`)
+    },
     // 评价e
     evaluate(item) {
       this.$router.push({
         path: '/estimate',
         query: {
-          id: this.id,
-          orderId: item.id,
-          index: this.index,
           appraise:item.appraise || ''
         }
       })

@@ -5,7 +5,7 @@
       <x-icon slot="overwrite-left"
               type="ios-arrow-left"
               size="30"
-              @click="$router.push({path: '/performorderinfo', query: {index: index, id: orderId}})"
+              @click="$router.push('/performorderinfo')"
               style="fill:#fff;position:relative;top:-5px;left:-3px;"></x-icon>
     </x-header>
     <!-- 预计完成时间 -->
@@ -105,8 +105,6 @@ export default {
         }
       },
       token: '',
-      index: 0,
-      orderId: 0,
       id: 0, // 工单进度id
       btncolor: ['dodgerblue', 'dodgerblue'],
       finishDate: '', // 完成时间
@@ -136,6 +134,12 @@ export default {
     }
   },
   computed: {
+    index() {
+      return this.$store.state.navIndex
+    },
+    orderId() {
+      return this.$store.state.orderId
+    },
     uploadUrl() {
       return `${this.axiosUrl}system/uploadFile.do?token=${this.token}`
     }
@@ -148,8 +152,6 @@ export default {
   methods: {
     // 获取参数
     getquery() {
-      this.index = this.$route.query.index
-      this.orderId = this.$route.query.id
       const date = this.$route.query.date
       if (date) {
         this.finishDate = date
@@ -237,12 +239,7 @@ export default {
           this.toastValue = '提交成功'
           setTimeout(() => {
             // 页面跳转
-            this.$router.push({
-              path:'/performlist',
-              query: {
-                index: this.index
-              }
-            })
+            this.$router.push('/performlist')
           }, 800) // end setTimeout
         })
     }

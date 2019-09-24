@@ -68,7 +68,7 @@ export default {
         userArr.push({name: item.text, id: item.id})
       })
       const jsonData = JSON.stringify(userArr)
-      console.log(jsonData)
+      // console.log(jsonData)
       // 页面跳转
       this.$router.push({
         path: this.$store.state.salesmanBackRouter,
