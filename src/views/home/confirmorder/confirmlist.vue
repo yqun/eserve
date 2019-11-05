@@ -76,10 +76,7 @@
       // 获取带指派
       getWait() {
         // console.log(this.navIndex)
-        const data = {
-          page:this.page,
-          rows:this.rows
-        }
+        const data = {page:this.page, rows:this.rows}
         if (this.navIndex == 0) {data.f_confirmed = false}
         else if (this.navIndex == 1) {data.f_confirmed = true}
         else if (this.navIndex == 2) {data.f_work_order_state = '已取消'}
@@ -87,7 +84,7 @@
         this.axios
           .get(`workOrder/findWorkOrderBySalesmanPage.do`, {params: data})
           .then(res => {
-            // console.log(res)
+            console.log(res)
             const {status} = res
             if (status !== 200) return false;
             const {rows, total} = res.data

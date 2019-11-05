@@ -9,7 +9,8 @@
               style="fill:#fff;position:relative;top:-5px;left:-3px;"></x-icon>
     </x-header>
     <group title="基本信息" >
-      <x-input type="text" disabled :value="orderInfo.f_description" text-align="right" title="问题"></x-input>
+      <!--<x-input type="text" disabled :value="orderInfo.f_description" text-align="right" title="问题"></x-input>-->
+      <cell :value="orderInfo.f_description"><div slot="title" style="width: 5em;">问题</div></cell>
       <div>
         <img :src="url.imgUrl" alt="" style="height: 100px;" v-for="url in orderInfo.imgIds" :key="url.id">
       </div>

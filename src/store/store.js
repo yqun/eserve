@@ -12,7 +12,10 @@ const store = new Vuex.Store({
       type: Number,
       default: 0,
     },
-
+    orderInfo: { // 内部工单选择的工单类型信息
+      orderId: '',
+      orderName: '',
+    },
     salesmanBackRouter:'', // 跳转到选择业务员和客户之前的地址
   },
   mutations: {
@@ -20,6 +23,7 @@ const store = new Vuex.Store({
 
     changeServiceId: (state, id) => state.serviceId = id,
     changeOrderId: (state, id) => state.orderId = id,
+    changeOrderInfo: (state, data) => state.orderInfo = data,
 
     changeSalesmanBackRouter(state, data) {
       state.salesmanBackRouter = data

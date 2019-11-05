@@ -6,16 +6,17 @@
               :scroll-bottom-offst="200"
               style="box-sizing: border-box; padding-top: 10px;padding-bottom: 10px;">
       <ul>
-        <li class="clearfix"
-            v-for="(item,i) in list" :key="item.id"
-            @click="$router.push({path: '/addorder', query: {id: item.id, name: item.f_type_name}})">
+        <li class="clearfix" v-for="(item,i) in list" :key="item.id"
+            @click="toAddorder(item)">
           <div class="item-pic">
             <img :src="item.imgUrl" alt="">
           </div>
           <div class="item-content">
             <h3>{{item.f_type_name}}</h3>
             <p>{{item.f_description}}</p>
-            <p v-for="name in item.chargers" :key="name.id">负责人:{{name.f_dispatcher_name}} {{name.f_dispatcher_phnum}}</p>
+            <p v-for="name in item.chargers" :key="name.id">
+              负责人:{{name.f_dispatcher_name}} {{name.f_dispatcher_phnum}}
+            </p>
           </div>
         </li>
       </ul>
@@ -47,6 +48,8 @@ export default {
         this.getOrderInfo()
       } else {
         const userId = this.$route.query.userId;
+        const path = this.$route.query.path;
+        const dataId = this.$route.query.dataId;
         // const userId = window.location.search.split('&')[0].split('=')[1] || 'liwanlong';
         this.axios
           .get(`user/getToken.do?userId=${userId}`)
@@ -62,6 +65,11 @@ export default {
             window.sessionStorage.setItem('roles', rolesStr)
 
             this.$emit('haveToken') // 监听获取成功token
+
+            if (path) {
+              this.$store.commit('changeOrderId', dataId)
+              this.$router.push(`/${path}`)
+            }
 
             this.getOrderInfo()
           })
@@ -82,6 +90,11 @@ export default {
           })
         })
     },
+    // 跳转到addorder
+    toAddorder(item) {
+      this.$store.commit('changeOrderInfo', {orderId:item.id, orderName:item.f_type_name})
+      this.$router.push({path: '/addorder'})
+    }
   }
 }
 </script>

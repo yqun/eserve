@@ -65,11 +65,12 @@ export default {
       let userArr = [];
       this.chooseUser.forEach(item => {
         if (item.state == "closed") return false;
-        userArr.push({name: item.text, id: item.id})
+        userArr.push({name: item.text, id: item.id, qycode: item.attributes.qycode})
       })
       const jsonData = JSON.stringify(userArr)
       // console.log(jsonData)
       // 页面跳转
+      // return false;
       this.$router.push({
         path: this.$store.state.salesmanBackRouter,
         query: {

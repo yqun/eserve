@@ -36,6 +36,9 @@ import { Toast } from 'vux'
 import { Confirm } from 'vux'
 import { Alert } from 'vux'
 import  { ToastPlugin } from 'vux'
+import { XNumber } from 'vux'
+import { InlineXNumber } from 'vux'
+import { Cell } from 'vux'
 
 
 Vue.use(Axios)
@@ -74,6 +77,9 @@ Vue.component('toast', Toast)
 Vue.component('confirm', Confirm)
 Vue.component('alert', Alert)
 Vue.use(ToastPlugin)
+Vue.component('x-number', XNumber)
+Vue.component('inline-x-number', InlineXNumber)
+Vue.component('cell', Cell)
 
 // 注册一个全局自定义指令 `v-focus`
 Vue.directive('focus', {
