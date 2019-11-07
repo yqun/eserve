@@ -1,14 +1,9 @@
 <template>
   <div class="content">
     <h2>Welcome</h2>
-    <input type="text" placeholder="手机号" v-model="useriphone">
-    <input type="password" placeholder="密码" v-model="userpwd">
-    <div style="text-align: left; margin-top: 10px;">
-      <check-icon :value.sync="remember"  type="plain">记住用户名</check-icon>
-    </div>
-    <x-button :gradients="['#8acffe', '#2A91D8']" @click.native="login()">登录</x-button>
+    <input placeholder="手机号" v-model="useriphone">
+    <x-button :gradients="['#8acffe', '#2A91D8']" @click.native="login()">确认绑定</x-button>
     <div class="footer">北京金山顶尖科技股份有限公司</div>
-    <toast v-model="toastShow" type="text" :time="800" is-show-mask :text="toastValue" position="middle" width="10em"></toast>
   </div>
 </template>
 
@@ -22,53 +17,20 @@ export default {
   data() {
     return {
       useriphone: '',
-      userpwd: '',
-      remember: false,
-      // toast
-      toastShow: false,
-      toastValue: '',
+      openId: '',
     }
   },
   created() {
-    const userStr = window.localStorage.getItem('user')
-    if (userStr) {
-      const userInfo  = JSON.parse(userStr)
-      this.useriphone = userInfo.useriphone
-      this.userpwd    = userInfo.userpwd
-      this.remember   = userInfo.remember
-    }
+    this.openId = this.$route.query.openId
+    console.log(this.openId)
   },
   methods: {
     // 登录
     login() {
-      if (!this.useriphone.trim()) return this.$vux.toast.text('请输入用户名')
-      if (!this.userpwd.trim()) return this.$vux.toast.text('请输入密码')
-      const data = {
-        f_phone_num: this.useriphone,
-        f_pwd: this.userpwd
-      }
-      this.axios
-        .post('user/mobile_logIn.do', data)
-        .then(res => {
-          // console.log(res)
-          const {state, token, roles} = res.data
-          if (state !== 1) return this.$vux.toast.text(res.data.info)
-          // 成功
-          const {id} = res.data
-          const rolesStr = JSON.stringify(roles)
-          window.sessionStorage.setItem('token', token)
-          window.sessionStorage.setItem('id', id)
-          window.sessionStorage.setItem('roles', rolesStr)
-          // 用户名  密码
-          if(this.remember) {
-            const user = {useriphone: this.useriphone, userpwd: this.userpwd, remember: true}
-            window.localStorage.setItem('user', JSON.stringify(user))
-          } else {
-            const userStr = window.localStorage.getItem('user')
-            if (userStr) window.localStorage.removeItem('user')
-          }
-          this.$router.push('/internalorder')
-        })
+      if (!this.useriphone.trim()) return this.$vux.toast.text('请输入手机号')
+      if(!(/^1[3456789]\d{9}$/.test(this.useriphone))) return this.$vux.toast.text('手机号码有误，请重填');
+      const data = {f_phone_num: this.useriphone, openId: this.openId}
+      this.axios.post('user/bindPhoneNum.do', data)
     }
   }
 }

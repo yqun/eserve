@@ -79,7 +79,7 @@ export default {
           if (state == "success") {
             const {token} = res.data
             window.sessionStorage.setItem('token', token)
-            this.$router.push('/userinfo')
+            this.$router.replace('/userinfo')
           } else if (state == "fail") {
             const { error } = res.data
             this.toastShow = true

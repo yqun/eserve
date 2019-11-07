@@ -39,6 +39,7 @@ import  { ToastPlugin } from 'vux'
 import { XNumber } from 'vux'
 import { InlineXNumber } from 'vux'
 import { Cell } from 'vux'
+import { TransferDom } from 'vux'
 
 
 Vue.use(Axios)
@@ -80,6 +81,8 @@ Vue.use(ToastPlugin)
 Vue.component('x-number', XNumber)
 Vue.component('inline-x-number', InlineXNumber)
 Vue.component('cell', Cell)
+Vue.directive('transfer-dom', TransferDom)
+
 
 // 注册一个全局自定义指令 `v-focus`
 Vue.directive('focus', {

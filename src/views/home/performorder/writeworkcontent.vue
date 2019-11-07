@@ -241,7 +241,7 @@ export default {
               totalMoneyCode:moneyCodeArr[item - 35]
             })
           })
-          // console.log(this.serverCategory)
+          console.log(this.serverCategory)
         })
     },
     // 获取用户之前填写的数据
@@ -462,7 +462,7 @@ export default {
           this.$vux.toast.text('提交成功')
           setTimeout(() => {
             // 页面跳转
-            this.$router.push('/performlist')
+            this.$router.replace('/performlist')
           }, 800) // end setTimeout
         })
     }

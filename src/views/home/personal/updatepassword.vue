@@ -96,7 +96,7 @@ export default {
               window.sessionStorage.setItem('token', token)
               const _that = this
               setTimeout(function() {
-                _that.$router.push('/userinfo')
+                _that.$router.replace('/userinfo')
               }, 800)
             } else {
               const {error} = res.data

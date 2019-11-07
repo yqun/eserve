@@ -71,7 +71,7 @@ export default {
       // console.log(jsonData)
       // 页面跳转
       // return false;
-      this.$router.push({
+      this.$router.replace({
         path: this.$store.state.salesmanBackRouter,
         query: {
           id: this.orderId,

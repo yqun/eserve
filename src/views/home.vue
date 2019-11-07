@@ -4,33 +4,33 @@
       e服务
     </div>
     <router-view @haveToken="getToken"></router-view>
-    <tabbar v-model="index" :key="index">
-      <tabbar-item link="/myorder">
+    <tabbar v-model="index">
+      <tabbar-item @on-item-click="$router.replace('/myorder')">
         <i class="iconfont icon-fl-jia" slot="icon"></i>
         <i class="iconfont icon-fl-jia" slot="icon-active" style="color: orange"></i>
         <span slot="label">我的工单</span>
       </tabbar-item>
-      <tabbar-item link="/assignedorder" v-if="assignedorder">
+      <tabbar-item @on-item-click="$router.replace('/assignedorder')" v-if="assignedorder">
         <i class="iconfont icon-icon02" slot="icon"></i>
         <i class="iconfont icon-icon02" slot="icon-active" style="color: orange"></i>
         <span slot="label">指派工单</span>
       </tabbar-item>
-      <tabbar-item link="/confirmorder" v-if="confirmorder">
+      <tabbar-item @on-item-click="$router.replace('/confirmorder')" v-if="confirmorder">
         <i class="iconfont icon-gongdan" slot="icon"></i>
         <i class="iconfont icon-gongdan" slot="icon-active" style="color: orange"></i>
         <span slot="label">确认工单</span>
       </tabbar-item>
-      <tabbar-item link="/performorder" v-if="performorder">
+      <tabbar-item @on-item-click="$router.replace('/performorder')" v-if="performorder">
         <i class="iconfont icon-fl-banzi" slot="icon"></i>
         <i class="iconfont icon-fl-banzi" slot="icon-active" style="color: orange"></i>
         <span slot="label">执行工单</span>
       </tabbar-item>
-      <tabbar-item link="/internalorder">
+      <tabbar-item @on-item-click="$router.replace('/internalorder')">
         <i class="iconfont icon-xiangmuliebiao" slot="icon"></i>
         <i class="iconfont icon-xiangmuliebiao" slot="icon-active" style="color: orange"></i>
         <span slot="label">内部工单</span>
       </tabbar-item>
-      <tabbar-item link="/personal">
+      <tabbar-item @on-item-click="$router.replace('/personal')">
         <i class="iconfont icon-wo1" slot="icon"></i>
         <i class="iconfont icon-wo1" slot="icon-active" style="color: orange"></i>
         <span slot="label">我</span>
@@ -86,22 +86,22 @@ export default {
       if (this.performorder) arr.push(true)
       if (this.confirmorder) arr.push(true)
       const routerpath = this.$route.path
-      // console.log(routerpath)
+      console.log(routerpath)
       switch(routerpath) {
         case '/myorder':
           this.index = 0
         break;
-        case '/listItem':
+        case '/internalorder':
           this.index = 1
         break;
-        case '/confirmlist':
+        case '/listItem':
           if (!this.assignedorder) {
             this.index = 1
           } else {
             this.index = 2
           }
         break;
-        case '/performlist':
+        case '/confirmlist':
           // 如果两个中  有正确的 this.index = 2
           if(this.assignedorder == true || this.confirmorder == true) {
             this.index = 4
@@ -114,12 +114,12 @@ export default {
             this.index = 1
           }
         break;
-        case '/internalorder':
+        case '/performlist':
           // 判断之前几个存在
           this.index=arr.length+1
         break;
       }
-      // console.log(this.index)
+      console.log(this.index)
     },
   }
 }

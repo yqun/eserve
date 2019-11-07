@@ -2,7 +2,7 @@
   <div class="fixedpadding">
     <x-header style="background-color:dodgerblue;color:#fff;">
       <span>工单提交</span>
-      <x-icon slot="overwrite-left" type="ios-arrow-left" size="30" @click="$router.push('/internalorder')" style="fill:#fff;position:relative;top:-5px;left:-3px;"></x-icon>
+      <x-icon slot="overwrite-left" type="ios-arrow-left" size="30" @click="$router.replace('/internalorder')" style="fill:#fff;position:relative;top:-5px;left:-3px;"></x-icon>
     </x-header>
     <group title="工单内容<b>*</b>">
       <x-textarea placeholder="工单内容" v-model="questionvalue"></x-textarea>
@@ -215,7 +215,7 @@ export default {
     getServeCategory() {
       this.axios.get(`dic/getDicValues.do?id=33`)
         .then(res => {
-          // console.log(res)
+          console.log(res)
           this.serverCategory = res.data
         })
     },

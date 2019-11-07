@@ -5,7 +5,7 @@
       <x-icon slot="overwrite-left"
               type="ios-arrow-left"
               size="30"
-              @click="$router.push('/performorder')"
+              @click="$router.replace('/performorder')"
               style="fill:#fff;position:relative;top:-5px;left:-3px;"></x-icon>
     </x-header>
     <!-- 其他类 -->
@@ -87,10 +87,21 @@
         <timeline-item><p>{{item.f_work_house}}</p></timeline-item>
         <timeline-item><p>{{item.f_remark}}</p></timeline-item>
         <timeline-item><p v-html="item.f_work_content"></p></timeline-item>
-        <p v-for="i in item.images" :key="i.id" class="enclosure">
-          <a :href="i.imagesUrl" download>{{i.f_name}}</a>
-        </p>
+        <timeline-item>
+          <div v-for="(i,index1) in item.images" :key="i.id" class="enclosure">
+            <a :href="i.imagesUrl" v-if="i.f_suffix != '.jpg' && i.f_suffix != '.png' && i.f_suffix != '.gif'"
+               download>
+              {{i.f_name}}
+            </a>
+            <a v-if="i.f_suffix == '.jpg' || i.f_suffix == '.png' || i.f_suffix == '.gif'"
+               class="previewer-demo-img" @click="$refs.previewer[index].show(index1)">{{i.f_name}}</a>
+          </div>
+          <div v-transfer-dom v-if="typeof item.images == 'object'">
+            <previewer :list="item.images" ref="previewer" :options="options"></previewer>
+          </div>
+        </timeline-item>
       </timeline>
+      <!-- 标案 -->
       <timeline class="timeline-demo" v-if="isStandard"
                 v-for="(item,index) in count" :key="index" >
         <timeline-item><p class="recent">{{item.name}}</p></timeline-item>
@@ -98,23 +109,49 @@
         <timeline-item><p>{{item.f_bid_doc_count}}</p></timeline-item>
         <timeline-item><p>{{item.f_bid_win}}</p></timeline-item>
         <timeline-item><p v-html="item.f_remark"></p></timeline-item>
-        <p v-for="i in item.images" :key="i.id" class="enclosure">
-          <a :href="i.imagesUrl" download>{{i.f_name}}</a>
-        </p>
-      </timeline>
-      <timeline class="timeline-demo" v-if="isPreSale"
-                v-for="(item,index) in count" :key="index" >
-        <timeline-item><p class="recent">{{item.name}}</p></timeline-item>
-        <timeline-item><p>{{item.f_cost}}元</p></timeline-item>
-        <timeline-item><p v-html="item.f_remark"></p></timeline-item>
         <timeline-item>
-          <p v-for="i in item.images" :key="i.id" class="enclosure">
-            <a :href="i.imagesUrl" download>{{i.f_name}}</a>
+          <div v-for="(i,index1) in item.images" :key="i.id" class="enclosure">
+            <a :href="i.imagesUrl" v-if="i.f_suffix != '.jpg' && i.f_suffix != '.png' && i.f_suffix != '.gif'"
+               download>
+              {{i.f_name}}
+            </a>
+            <a v-if="i.f_suffix == '.jpg' || i.f_suffix == '.png' || i.f_suffix == '.gif'"
+               class="previewer-demo-img" @click="$refs.previewer[index].show(index1)">{{i.f_name}}</a>
+          </div>
+          <div v-transfer-dom v-if="typeof item.images == 'object'">
+            <previewer :list="item.images" ref="previewer" :options="options"></previewer>
+          </div>
+        </timeline-item>
+      </timeline>
+      <!-- 售前 -->
+      <timeline class="timeline-demo" v-if="isPreSale"
+                v-for="(item,index) in count" :key="index">
+        <timeline-item>
+          <p class="recent">{{item.f_handler_name}} {{item.f_handle_time}}</p>
+        </timeline-item>
+        <timeline-item>
+          <p @click="preSaleCost = true, preSaleCostData = item">
+            <a href="javascript:;" style="text-decoration: underline;">本次费用：{{item.f_cost || 0}}元</a>
           </p>
+        </timeline-item>
+        <timeline-item>
+          <p v-html="`备注：${item.f_remark || item.f_work_content}`"></p>
+        </timeline-item>
+        <timeline-item>
+          <div v-for="(i,index1) in item.images" :key="i.id" class="enclosure">
+            <a :href="i.imagesUrl" v-if="i.f_suffix != '.jpg' && i.f_suffix != '.png' && i.f_suffix != '.gif'"
+               download>
+              {{i.f_name}}
+            </a>
+            <a v-if="i.f_suffix == '.jpg' || i.f_suffix == '.png' || i.f_suffix == '.gif'"
+               class="previewer-demo-img" @click="$refs.previewer[index].show(index1)">{{i.f_name}}</a>
+          </div>
+          <div v-transfer-dom v-if="typeof item.images == 'object'">
+            <previewer :list="item.images" ref="previewer" :options="options"></previewer>
+          </div>
         </timeline-item>
       </timeline>
     </group>
-
     <div class="btnsubmit" v-if="index==0">
       <flexbox style="box-sizing: border-box;" v-if="!isPreSale && !isStandard">
         <flexbox-item><x-button class="flex-btn" :disabled="f_start" @click.native="confirm('f_start')">出发</x-button></flexbox-item>
@@ -143,6 +180,29 @@
              :title="confirmTitle">
       <p style="text-align:center;">{{confirmContent}}</p>
     </confirm>
+    <!-- 售前总价分记 -->
+    <confirm v-model="preSaleCost" title="价格" @on-cancel="preSaleCost = false" :show-confirm-button="false">
+      <div style="text-align: left;">
+        <!--
+          * [
+          * 'f_inquiry_count',
+          * 'f_budget_count',
+          * 'f_plan_count',
+          * 'f_project_count',
+          * 'f_sheet_count',
+          * 'f_gld_count',
+          * 'f_site_count',
+          * 'f_zltbcs_count',
+          * 'f_support_count',
+          * 'f_doccheck_count'
+          * ];
+        -->
+        <p v-for="item in preSaleCostData.costInfoArr" :key="item.name">
+          <strong style="display: inline-block;width: 60%;">{{item.name}}</strong>
+          <span>{{item.num || 0}}{{item.company}}　{{item.money || 0}}元</span>
+        </p>
+      </div>
+    </confirm>
     <!-- toast -->
     <toast v-model="toastShow"
            :text="toastValue"
@@ -160,6 +220,8 @@ export default {
   name: "performorderinfo",
   data () {
     return {
+      previewer: '',
+      previewerShow: false,
       orderInfo: {},
       f_name: '',
       count: [],
@@ -173,6 +235,8 @@ export default {
       confirmShow: false,
       confirmTitle: '',
       confirmContent: '',
+      preSaleCost: false, // 售前总价弹框
+      preSaleCostData: {},
       hourListValue: '', // 时间
       visibility: false, // 默认弹出
       // toast
@@ -183,6 +247,14 @@ export default {
       },
       // 预计完成时间
       finishDate: '',
+      options: {
+        getThumbBoundsFn(index) {
+          let thumbnail = document.querySelectorAll(".previewer-demo-img")[index];
+          let pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
+          let rect = thumbnail.getBoundingClientRect();
+          return { x: rect.left, y: rect.top + pageYScroll, w: rect.width };
+        }
+      }, // options
     }
   },
   computed: {
@@ -275,6 +347,13 @@ export default {
               if (item.images) {
                 item.images.forEach(item => {
                   item.imagesUrl = `${this.axiosUrl}system/getImage.do?id=${item.id}`
+                  item.w = '100%'
+                  // item.h = 2
+                  if (item.f_suffix == '.jpg' || item.f_suffix == '.png' || item.f_suffix == '.gif') {
+                    item.src = new URL(`${this.axiosUrl}system/getImage.do?id=${item.id}`)
+                    item.msrc = new URL(`${this.axiosUrl}system/getImage.do?id=${item.id}`)
+                  }
+
                 })
               }
 
@@ -302,12 +381,17 @@ export default {
                   images: item.images
                 })
               } else if (this.isPreSale) {
-                this.count.push({
-                  name: item.f_handler_name + '　' + item.f_handle_time,
-                  f_cost: `本次费用：${item.f_cost || ''}`,
-                  f_remark: `备注：${item.f_remark || item.f_work_content}`,
-                  images: item.images
-                })
+                item.costInfoArr = [
+                  {name:'项目询价：', num: item.f_inquiry_count, money: item.inquiry_cost, company: '家'},
+                  {name:'预算编制：', num: item.f_budget_count, money: item.budget_cost, company: '家'},
+                  {name:'方案制作：', num: item.f_plan_count, money: item.plan_cost, company: '家'},
+                  {name:'项目申报：', num: item.f_project_count, money: item.project_cost, company: '家'},
+                  {name:'图纸设计：', num: item.f_sheet_count, money: item.sheet_cost, company: '张'},
+                  {name:'广联达预算：', num: item.f_gld_count, money: item.gld_cost, company: '家'},
+                  {name:'现场支持：', num: item.f_site_count, money: item.site_cost, company: '次'},
+                  {name:'整理招投标参数：', num: item.f_zltbcs_count, money: item.zltbcs_cost, company: '家'},
+                ]
+                this.count.push(item)
               }
             })
           }// end if
@@ -436,6 +520,9 @@ export default {
   z-index:999;
   border-radius: 0px;
   background-color: #fff;
+}
+.enclosure {
+  overflow: auto;
 }
 .enclosure a {
   text-decoration: underline;

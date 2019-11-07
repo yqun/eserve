@@ -144,9 +144,10 @@ export default {
   },
   methods: {
     routerLink() {
-      this.$router.path == '/oftenaddress'? this.$router.push('/myorder'):this.$router.push(this.$router.path)
+      this.$router.path == '/oftenaddress'? this.$router.replace('/myorder'):this.$router.replace(this.$router.path)
     },
     show (index) {
+      console.log(this.filesImg)
       this.$refs.previewer.show(index)
     },
     // 获取资产类别
@@ -226,7 +227,7 @@ export default {
               this.toastShow = true
               this.toastValue = '提交完成'
               setTimeout(() => {
-                this.$router.push('/')
+                this.$router.replace('/')
               }, 800)
             } else {
               const {error} = res.data
