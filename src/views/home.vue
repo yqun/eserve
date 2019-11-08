@@ -86,7 +86,7 @@ export default {
       if (this.performorder) arr.push(true)
       if (this.confirmorder) arr.push(true)
       const routerpath = this.$route.path
-      console.log(routerpath)
+      // console.log(routerpath)
       switch(routerpath) {
         case '/myorder':
           this.index = 0
@@ -98,7 +98,7 @@ export default {
           if (!this.assignedorder) {
             this.index = 1
           } else {
-            this.index = 2
+            this.index = 3
           }
         break;
         case '/confirmlist':
@@ -107,7 +107,7 @@ export default {
             this.index = 4
             // 如果两个都正确  this.index = 3
             if (this.assignedorder == true && this.confirmorder == true)  {
-              this.index = 3
+              this.index = 4
             }
           } else {
             // 如果两个都不正确 this.index = 1
@@ -116,10 +116,10 @@ export default {
         break;
         case '/performlist':
           // 判断之前几个存在
-          this.index=arr.length+1
+          this.index=arr.length+2
         break;
       }
-      console.log(this.index)
+      // console.log(this.index)
     },
   }
 }

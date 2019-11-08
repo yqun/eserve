@@ -210,6 +210,7 @@ export default {
       return this.$store.state.navIndex
     },
     orderId() {
+      console.log(this.$store.state.orderId)
       return this.$store.state.orderId
     },
     f_confirmed() {
@@ -266,8 +267,9 @@ export default {
       this.axios
         .get(`workOrder/getWorkersByWorkOrder.do?id=${this.orderId}`)
         .then(res => {
-          // console.log(res)
+          console.log(res)
           const {status, data} = res
+          console.log(status)
           if (status != 200) return false;
           if (data.length != 0) {
             data.forEach(item => {
@@ -281,7 +283,7 @@ export default {
       this.axios
         .get(`workOrder/findWorkOrerLogs.do?id=${this.orderId}`)
         .then(res => {
-          console.log(res)
+          console.log('进度信息',res)
           const {status, data} = res
           if (status != 200) return false;
           if (data.length != 0) {

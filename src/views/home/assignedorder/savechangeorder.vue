@@ -37,7 +37,7 @@
       </x-input>
       <datetime v-if="isStandard" readonly title="开标时间" v-model="bidingDate" format="YYYY-MM-DD HH:mm"></datetime>
       <x-number v-if="isStandard" readonly title="标书本数" v-model="bidingCount" :min="0"></x-number>
-      <!-- 标案类 -->
+      <!-- end标案类 -->
       <x-input disabled v-model="f_name" text-align="right" @click.native="toSalesman('指派人员')" placeholder="已指派人员">
         <span slot="label">已指派人员<b>*</b></span>
       </x-input>
@@ -202,11 +202,12 @@ export default {
       this.axios
         .get(`workOrder/getWorkersByWorkOrder.do?id=${this.orderId}`)
         .then(res => {
-          // console.log(res)
+          console.log(1,res)
           const {status, data} = res
           if (status != 200) return false;
           if (data.length != 0) {
             data.forEach(item => {
+              this.f_nameId.push(item.id)
               this.f_name += "　" + item.f_name
             })
           }
