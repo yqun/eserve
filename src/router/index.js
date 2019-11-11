@@ -1,38 +1,38 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/views/home'
-import Myorder from '@/views/home/myorder' // 我的工单
-import Myorderlist from '@/views/home/myorder/myorderlist'
-import Myorderlistitem from '@/views/home/myorder/myorderlistitem'
-import Myorderlistiteminfo from '@/views/home/myorder/myorderlistiteminfo'
-import Ordersubmitview from '@/views/home/myorder/ordersubmitview' // 工单提交
-import Ordersubmit from '@/views/home/myorder/ordersubmit' // 工单提交
-import Oftenaddress from '@/views/home/myorder/oftenaddress' // 常用地址
-import Estimate from '@/views/home/myorder/estimate' // 常用地址
-import Salesman from '@/views/home/myorder/salesman'  // 业务员
+const Home  = () => import('@/views/home');
+const Myorder  = () => import('@/views/home/myorder'); // 我的工单
+const Myorderlist  = () => import('@/views/home/myorder/myorderlist');
+const Myorderlistitem  = () => import('@/views/home/myorder/myorderlistitem');
+const Myorderlistiteminfo  = () => import('@/views/home/myorder/myorderlistiteminfo');
+const Ordersubmitview  = () => import('@/views/home/myorder/ordersubmitview'); // 工单提交
+const Ordersubmit  = () => import('@/views/home/myorder/ordersubmit'); // 工单提交
+const Oftenaddress  = () => import('@/views/home/myorder/oftenaddress'); // 常用地址
+const Estimate  = () => import('@/views/home/myorder/estimate'); // 常用地址
+const Salesman  = () => import('@/views/home/myorder/salesman');  // 业务员
 
-import Internalorder from '@/views/home/internalorder' //内部工单
-import Addorder from '@/views/home/internalorder/addorder' // 新建工单
+const Internalorder  = () => import('@/views/home/internalorder'); //内部工单
+const Addorder  = () => import('@/views/home/internalorder/addorder'); // 新建工单
 
-import Assignedorder from '@/views/home/assignedorder' // 指派工单
-import ListItem from '@/views/home/assignedorder/listitem'
-import Assignedorderinfo from '@/views/home/assignedorder/assignedorderinfo' // assignedorderinfo工单详情
-import Savechangeorder from '@/views/home/assignedorder/savechangeorder' // assignedorderinfo工单详情
+const Assignedorder  = () => import('@/views/home/assignedorder'); // 指派工单
+const ListItem  = () => import('@/views/home/assignedorder/listitem');
+const Assignedorderinfo  = () => import('@/views/home/assignedorder/assignedorderinfo'); // assignedorderinfo工单详情
+const Savechangeorder  = () => import('@/views/home/assignedorder/savechangeorder'); // assignedorderinfo工单详情
 
-import Performorder from '@/views/home/performorder' // 执行工单
-import Performlist from '@/views/home/performorder/Performlist' // 执行工单
-import Performorderinfo from '@/views/home/performorder/performorderinfo' // performorderinfo工单详情
-import Writeworkcontent from '@/views/home/performorder/writeworkcontent' // 填写工作内容
+const Performorder  = () => import('@/views/home/performorder'); // 执行工单
+const Performlist  = () => import('@/views/home/performorder/Performlist'); // 执行工单
+const Performorderinfo  = () => import('@/views/home/performorder/performorderinfo'); // performorderinfo工单详情
+const Writeworkcontent  = () => import('@/views/home/performorder/writeworkcontent'); // 填写工作内容
 
-import Confirmorder from '@/views/home/confirmorder' // 确认工单
-import Confirmlist from '@/views/home/confirmorder/confirmlist' // 确认工单列表
-import Confirminfo from '@/views/home/confirmorder/confirminfo' // 确认工单列表
+const Confirmorder  = () => import('@/views/home/confirmorder'); // 确认工单
+const Confirmlist  = () => import('@/views/home/confirmorder/confirmlist'); // 确认工单列表
+const Confirminfo  = () => import('@/views/home/confirmorder/confirminfo');// 确认工单列表
 
 
-import Personal from '@/views/home/personal' // 个人中心
-import Userinfo from '@/views/home/personal/userinfo' // 个人中心 主页
-import Updatephone from '@/views/home/personal/updatephone' // 修改手机号
-import Updatepassword from '@/views/home/personal/updatepassword' // 修改密码
+const Personal  = () => import('@/views/home/personal'); // 个人中心
+const Userinfo  = () => import('@/views/home/personal/userinfo'); // 个人中心 主页
+const Updatephone  = () => import('@/views/home/personal/updatephone'); // 修改手机号
+const Updatepassword  = () => import('@/views/home/personal/updatepassword'); // 修改密码
 
 import Login from '@/views/home/login'  // 登录
 import Error from '@/views/home/error' // 错误
