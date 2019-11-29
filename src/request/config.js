@@ -2,11 +2,11 @@ import Vue from 'vue'
 import axios from 'axios'
 import queryString from 'querystring'
 
-// const urlStr = 'http://eService.kingtop.com.cn:80/platform/';
+const urlStr = 'http://eService.kingtop.com.cn:80/platform/';
 // const urlStr = 'http://epublic.kingtop.com.cn/platform/';
 // const urlStr = 'http://10.1.9.34:7080/platform/';
 // const urlStr = 'http://10.1.10.148:8080/platform/';
-const urlStr = 'http://10.1.5.220:8091/platform/';
+// const urlStr = 'http://10.1.5.220:8091/platform/';
 const Http = axios.create({
   baseURL: urlStr,
   timeout: 100000,

@@ -68,7 +68,7 @@ i.iconfont.icon-jiahao {
   height: 40px;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #01AAED;
+  border: 1px solid #1678ff;
   border-radius: 5px;
   margin-top: 6px;
   padding: 0 10px;

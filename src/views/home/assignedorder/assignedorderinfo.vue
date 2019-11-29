@@ -9,7 +9,7 @@
               style="fill:#fff;position:relative;top:-5px;left:-3px;"></x-icon>
     </x-header>
 
-    <group title="基本信息" v-if="!isStandard && !isPreSale">
+    <group class="basic_info" title="基本信息" v-if="!isStandard && !isPreSale">
       <cell :value="orderInfo.f_description"><div slot="title" style="width: 3em;">问题</div></cell>
       <div style="padding: 0 10px;">
         <img :src="url.imgUrl" alt="" style="height: 100px;" v-for="url in orderInfo.imgIds" :key="url.id">
@@ -33,7 +33,7 @@
       <x-input type="text" disabled :value="orderInfo.f_remark" text-align="right" title="备注"></x-input>
     </group>
     <!-- 标案 -->
-    <group title="基本信息" v-if="isStandard">
+    <group class="basic_info" title="基本信息" v-if="isStandard">
       <x-input type="text" disabled :value="orderInfo.f_creater_name" text-align="right" title="创建人"></x-input>
       <x-input type="text" disabled :value="orderInfo.f_create_time" text-align="right" title="创建时间"></x-input>
       <div style="padding: 0 10px;">
@@ -54,7 +54,7 @@
       <x-input type="text" disabled text-align="right" :value="orderInfo.f_remark" title="备注"></x-input>
     </group>
     <!-- 售前服务 -->
-    <group title="基本信息" v-if="isPreSale">
+    <group class="basic_info" title="基本信息" v-if="isPreSale">
       <x-input type="text" disabled :value="orderInfo.f_creater_name" text-align="right" title="创建人"></x-input>
       <x-input type="text" disabled :value="orderInfo.f_create_time" text-align="right" title="创建时间"></x-input>
       <div style="padding: 0 10px;">
@@ -70,7 +70,7 @@
       <x-input type="text" disabled text-align="right" :value="orderInfo.f_remark" title="备注"></x-input>
     </group>
 
-    <group title="进度信息" v-if="count.length">
+    <group class="plan_info" title="进度信息" v-if="count.length">
       <timeline class="timeline-demo"
                 v-if="!isStandard && !isPreSale"
                 v-for="(item,index) in count" :key="index" >
@@ -335,6 +335,8 @@ export default {
                   {name:'广联达预算：', num: item.f_gld_count, money: item.gld_cost, company: '家'},
                   {name:'现场支持：', num: item.f_site_count, money: item.site_cost, company: '次'},
                   {name:'整理招投标参数：', num: item.f_zltbcs_count, money: item.zltbcs_cost, company: '家'},
+                  {name:'投标技术支持：', num: item.f_support_count, money: item.support_cost, company: '次'},
+                  {name:'标书审核：', num: item.f_doccheck_count, money: item.doccheck_cost, company: '次'},
                 ]
                 this.count.push(item)
               }
@@ -347,6 +349,7 @@ export default {
 </script>
 
 <style scoped>
+@import '../../../assets/css/formInfo.css';
 .vux-header {
   position:fixed;
   top: 0;

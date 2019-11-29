@@ -13,10 +13,11 @@
           </div>
           <div class="item-content">
             <h3>{{item.f_type_name}}</h3>
-            <p>{{item.f_description}}</p>
+            <p :style="{color: i%2==0?'#1678ff':'#ff467f'}">{{item.f_description}}</p>
             <p v-for="name in item.chargers" :key="name.id">
               负责人:{{name.f_dispatcher_name}} {{name.f_dispatcher_phnum}}
             </p>
+            <div class="dot" style="background: url('../../../static/img/jingling.png')221px -9px/375px;"></div>
           </div>
         </li>
       </ul>
@@ -104,43 +105,54 @@ export default {
   height: 100%;
 }
 li {
-  height: 100px;
   box-sizing: border-box;
-  border: 1px solid #01AAED;
+  padding-left: 30%;
   border-radius: 5px;
   margin-bottom: 10px;
   overflow: hidden;
+  box-shadow: 0 2px 10px 0 rgba(0,0,0,0.15);
+  position: relative;
 }
 li > div {
   float: left;
   box-sizing: border-box;
+  padding: 10px 0;
 }
 .item-pic {
   width: 30%;
   height: 100%;
-  background-color: #ccc;
   overflow: hidden;
-  position: relative;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
 }
 .item-pic img {
+  width: 70%;
   display: block;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  /*width: 100%;*/
-  /*height: 100%;*/
 }
 .item-content {
-  width: 70%;
+  width: 100%;
   padding-left: 10px;
+  position: relative;
+}
+.item-content .dot {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 6px;
+  height: 27px;
 }
 .item-content h3 {
   font-weight: 400;
-  color: #000;
+  color: #333;
 }
 .item-content p {
   font-size: 14px;
-  color: #333;
+  color: #787878;
 }
 </style>

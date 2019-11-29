@@ -224,7 +224,7 @@ export default {
       this.axios
         .get(`workOrder/findEntityById.do?id=${this.orderId}`)
         .then(res => {
-          // console.log('orderinfo', res)
+          console.log('orderinfo', res)
           const {data} = res
           // this.orderInfo = res.data
           const ids = data.f_presale_type_ids.split(',');

@@ -13,10 +13,14 @@
           <p>客户：{{item.f_customer_name}}({{item.f_customer_phnum}})</p>
           <p>地址：{{item.f_address}}</p>
           <span>{{item.f_create_time}}</span>
+          <div class="dot"></div>
           <i v-if="index == 1 && item.appraiseCount == 0" @click.stop="evaluate(item)">添加评价</i>
           <i v-if="index == 1 && item.appraiseCount > 0" @click.stop="evaluate(item)">查看评价</i>
         </div>
         <div class="item-state">
+          <div class="state_img1" v-if="item.f_work_order_state.indexOf('查看') > 0"></div>
+          <div class="state_img2" v-else-if="item.f_work_order_state.indexOf('取消') > 0"></div>
+          <div class="state_img3" v-else></div>
           {{item.f_work_order_state}}
         </div>
       </li>
@@ -112,5 +116,17 @@ export default {
 .content {
   padding-bottom: 40px;
   box-sizing: border-box;
+}
+.dot {
+  background: url("../../../../static/img/jingling.png")221px -9px/375px;
+}
+.state_img1 {
+  background: url("../../../../static/img/dzp.png") no-repeat 0 0/40px;
+}
+.state_img2 {
+  background: url("../../../../static/img/yqx.png") no-repeat 0 0/40px;
+}
+.state_img3 {
+  background: url("../../../../static/img/gdclz.png") no-repeat 0 0/40px;
 }
 </style>

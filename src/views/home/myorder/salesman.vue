@@ -127,4 +127,16 @@ export default {
   z-index:999;
   border-radius: 0px;
 }
+
+/* el-tree (小三角，选择框，文字)大小 */
+div.el-tree >>> .el-tree-node__expand-icon{
+  font-size: 16px;
+}
+div.el-tree >>> .el-checkbox__inner{
+  width: 16px;
+  height: 16px;
+}
+div.el-tree >>> .el-tree-node__label{
+  font-size: 16px;
+}
 </style>

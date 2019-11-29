@@ -22,6 +22,7 @@
                 placeholder="请选择单位">
       </selector>
     </group>
+
     <p class="person" v-for="item in serviceStaffers" :key="item.id">{{item.f_name}} {{item.f_phone_num}}</p>
     <group>
       <x-textarea :max="100"
@@ -29,6 +30,7 @@
                   placeholder="问题描述">
       </x-textarea>
     </group>
+    <wx-voice @voiceStr="getVoiceStr"></wx-voice>
     <!-- 上传图片 -->
     <group>
       <!-- 查看图片 -->
@@ -78,9 +80,11 @@
 import Uploader from '../../../components/vux-uploader/src/main'
 import { TransferDom } from 'vux'
 import bus from '@/eventbus/eventbus'
+import wxVoice from '../../../components/wxVoice'
 export default {
   components: {
     Uploader,
+    wxVoice
   },
   directives: {
     TransferDom
@@ -237,6 +241,9 @@ export default {
           })
       }
 
+    },
+    getVoiceStr(str) {
+      this.questvalue += str
     }
   }
 }

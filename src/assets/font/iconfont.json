@@ -1,0 +1,142 @@
+{
+  "id": "1015905",
+  "name": "e服务",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "e服务",
+  "glyphs": [
+    {
+      "icon_id": "147169",
+      "name": "设置",
+      "font_class": "icon02",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "356459",
+      "name": "圈叉",
+      "font_class": "quancha",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "393406",
+      "name": "我",
+      "font_class": "my",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "563992",
+      "name": "添加图片",
+      "font_class": "tianjiatupian",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "872577",
+      "name": "我",
+      "font_class": "wo",
+      "unicode": "e6c3",
+      "unicode_decimal": 59075
+    },
+    {
+      "icon_id": "963815",
+      "name": "历史工单",
+      "font_class": "lishigongdan",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "1288623",
+      "name": "加",
+      "font_class": "jia",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "1356141",
+      "name": "返回",
+      "font_class": "fanhui",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "1646528",
+      "name": "语音",
+      "font_class": "yuyin1",
+      "unicode": "e69f",
+      "unicode_decimal": 59039
+    },
+    {
+      "icon_id": "2406006",
+      "name": "扳子",
+      "font_class": "fl-banzi",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "2439664",
+      "name": "家",
+      "font_class": "fl-jia",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "2966198",
+      "name": "返回",
+      "font_class": "fanhui1",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "3490810",
+      "name": "语音",
+      "font_class": "yuyin2",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
+      "icon_id": "4186777",
+      "name": "我",
+      "font_class": "wo1",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "4471486",
+      "name": "返回",
+      "font_class": "fanhui2",
+      "unicode": "e6d0",
+      "unicode_decimal": 59088
+    },
+    {
+      "icon_id": "5330626",
+      "name": "项目列表",
+      "font_class": "xiangmuliebiao",
+      "unicode": "e7a7",
+      "unicode_decimal": 59303
+    },
+    {
+      "icon_id": "7001849",
+      "name": "工单",
+      "font_class": "gongdan",
+      "unicode": "e685",
+      "unicode_decimal": 59013
+    },
+    {
+      "icon_id": "7367022",
+      "name": "语音",
+      "font_class": "yuyin",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "7434422",
+      "name": "加号",
+      "font_class": "jiahao",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    }
+  ]
+}

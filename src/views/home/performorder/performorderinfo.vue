@@ -9,7 +9,7 @@
               style="fill:#fff;position:relative;top:-5px;left:-3px;"></x-icon>
     </x-header>
     <!-- 其他类 -->
-    <group title="基本信息" v-if="!isStandard && !isPreSale">
+    <group title="基本信息" v-if="!isStandard && !isPreSale" class="basic_info">
       <cell :value="orderInfo.f_description"><div slot="title" style="width: 3em;">问题</div></cell>
       <div>
         <img :src="url.imgUrl" alt="" style="height: 100px;" v-for="url in orderInfo.imgIds" :key="url.id">
@@ -33,7 +33,7 @@
       <x-input type="text" disabled :value="orderInfo.f_remark" text-align="right" title="备注"></x-input>
     </group>
     <!-- 标案 -->
-    <group title="基本信息" v-if="orderInfo.f_work_order_type == '标案类'">
+    <group title="基本信息" v-if="orderInfo.f_work_order_type == '标案类'" class="basic_info">
       <x-input type="text" disabled :value="orderInfo.f_creater_name" text-align="right" title="创建人"></x-input>
       <x-input type="text" disabled :value="orderInfo.f_create_time" text-align="right" title="创建时间"></x-input>
       <div style="padding: 0 10px;">
@@ -54,7 +54,7 @@
       <x-input type="text" disabled text-align="right" :value="orderInfo.f_remark" title="备注"></x-input>
     </group>
     <!-- 售前服务 -->
-    <group title="基本信息" v-if="orderInfo.f_work_order_type == '售前服务'">
+    <group title="基本信息" v-if="orderInfo.f_work_order_type == '售前服务'" class="basic_info">
       <x-input type="text" disabled :value="orderInfo.f_creater_name" text-align="right" title="创建人"></x-input>
       <x-input type="text" disabled :value="orderInfo.f_create_time" text-align="right" title="创建时间"></x-input>
       <div style="padding: 0 10px;">
@@ -70,7 +70,7 @@
       <x-input type="text" disabled text-align="right" :value="orderInfo.f_remark" title="备注"></x-input>
     </group>
 
-    <group title="进度信息" :style="marginBottom" v-if="count.length">
+    <group title="进度信息" :style="marginBottom" v-if="count.length" class="plan_info">
       <timeline class="timeline-demo"
                 v-if="orderInfo.f_work_order_type != '标案类' && orderInfo.f_work_order_type != '售前服务'"
                 v-for="(item,index) in count" :key="index" >
@@ -154,11 +154,20 @@
     </group>
     <div class="btnsubmit" v-if="index==0">
       <flexbox style="box-sizing: border-box;" v-if="!isPreSale && !isStandard">
-        <flexbox-item><x-button class="flex-btn" :disabled="f_start" @click.native="confirm('f_start')">出发</x-button></flexbox-item>
-        <flexbox-item><x-button class="flex-btn" :disabled="f_arrive" @click.native="confirm('f_arrive')">到达</x-button></flexbox-item>
-        <flexbox-item><x-button class="flex-btn" :disabled="f_leave" @click.native="confirm('f_leave')">离开</x-button></flexbox-item>
-        <flexbox-item><x-button class="flex-btn" :disabled="f_return" @click.native="confirm('f_return')">返回</x-button></flexbox-item>
+        <flexbox-item>
+          <x-button class="flex-btn" :disabled="f_start" @click.native="chooseconfirmBtn('f_start')"><span>出发</span></x-button>
+        </flexbox-item>
+        <flexbox-item>
+          <x-button class="flex-btn" :disabled="f_arrive" @click.native="chooseconfirmBtn('f_arrive')"><span>到达</span></x-button>
+        </flexbox-item>
+        <flexbox-item>
+          <x-button class="flex-btn" :disabled="f_leave" @click.native="chooseconfirmBtn('f_leave')"><span>离开</span></x-button>
+        </flexbox-item>
+        <flexbox-item>
+          <x-button class="flex-btn" :disabled="f_return" @click.native="chooseconfirmBtn('f_return')"><span>返回</span></x-button>
+        </flexbox-item>
       </flexbox>
+
       <x-button :gradients="btncolor"
                 style="border-radius: 0"
                 @click.native="$router.push({path:'/writeworkcontent', query: {date: finishDate, work_order_type: orderInfo.f_work_order_type}})">
@@ -203,15 +212,6 @@
         </p>
       </div>
     </confirm>
-    <!-- toast -->
-    <toast v-model="toastShow"
-           :text="toastValue"
-           type="text"
-           :time="1000"
-           is-show-mask
-           position="middle"
-           width="10em">
-    </toast>
   </div>
 </template>
 
@@ -239,9 +239,6 @@ export default {
       preSaleCostData: {},
       hourListValue: '', // 时间
       visibility: false, // 默认弹出
-      // toast
-      toastShow: false,
-      toastValue: '',
       marginBottom: {
         'margin-bottom': '0',
       },
@@ -390,6 +387,8 @@ export default {
                   {name:'广联达预算：', num: item.f_gld_count, money: item.gld_cost, company: '家'},
                   {name:'现场支持：', num: item.f_site_count, money: item.site_cost, company: '次'},
                   {name:'整理招投标参数：', num: item.f_zltbcs_count, money: item.zltbcs_cost, company: '家'},
+                  {name:'投标技术支持：', num: item.f_support_count, money: item.support_cost, company: '次'},
+                  {name:'标书审核：', num: item.f_doccheck_count, money: item.doccheck_cost, company: '次'},
                 ]
                 this.count.push(item)
               }
@@ -412,7 +411,7 @@ export default {
         })
     },
     // 点击4个按钮弹窗
-    confirm(state) {
+    chooseconfirmBtn(state) {
       this.visibility = true;
       switch(state) {
         case 'f_start':
@@ -462,28 +461,27 @@ export default {
           // console.log(res)
           const {status, data} = res
           if (status != 200) return false;
-          this.toastShow = true
           if (data.res == 'true') {
-            this.toastValue = '设置成功'
+            this.$vux.toast.text('设置成功')
             // 禁用按钮
             switch(state) {
               case 'f_start_date':
-                this.f_start = true
+                this.f_start = true;
                 break;
               case 'f_arrive_date':
-                this.f_arrive = true
+                this.f_arrive = true;
                 break;
               case 'f_return_date':
-                this.f_return = true
+                this.f_return = true;
                 break;
               case 'f_leave_date':
-                this.f_leave = true
+                this.f_leave = true;
                 break;
             }
             // 刷新页面
             this.getSchedule()
           } else {
-            this.toastValue = res.error
+            this.$vux.toast.text(res.error)
           }
         })
     },
@@ -492,6 +490,7 @@ export default {
 </script>
 
 <style scoped>
+@import '../../../assets/css/formInfo.css';
 .vux-header {
   position:fixed;
   top: 0;
@@ -507,18 +506,32 @@ export default {
   color: deepskyblue;
 }
 .flex-btn {
-  height: 40px;
-  line-height: 40px;
+  height: 30px;
+  line-height: 30px;
   text-align: center;
-  background-color: #606060;
-  color: #fff;
+  font-size: 16px;
+  background-color: transparent;
+  color: #1678ff;
+}
+.flex-btn span {
+  border-bottom: 1px solid #1678ff;
+}
+.weui-btn:after {
+  border: 0;
+}
+.weui-btn_disabled.weui-btn_default {
+  color: #ccc;
+  background-color: transparent;
+}
+.weui-btn_disabled.weui-btn_default span{
+  border-color: #ccc;
 }
 .btnsubmit {
   width: 100%;
   position: fixed;
   bottom: 0;
   z-index:999;
-  border-radius: 0px;
+  border-radius: 0;
   background-color: #fff;
 }
 .enclosure {

@@ -7,6 +7,7 @@
     <group title="工单内容<b>*</b>">
       <x-textarea placeholder="工单内容" v-model="questionvalue"></x-textarea>
     </group>
+    <wx-voice @voiceStr="getVoiceStr"></wx-voice>
     <!-- 图片上传 -->
     <group v-if="!isStandard && !isPreSale">
       <div v-transfer-dom>
@@ -47,8 +48,11 @@
       <x-input :show-clear="false" text-align="right" v-model="usernameinfo" placeholder="选择业务员" @click.native="toSalesman()">
         <span slot="label">业务员<i>*</i></span>
       </x-input>
-      <selector title="项目名称<b>*</b>" direction="rtl" :options="projectInfoList" ref="projectInfo" @on-change="getProjectCode"
-                v-model="project_code" placeholder="请选择项目名称" :value-map="['code', 'name']">
+      <selector title="项目名称<b>*</b>" direction="rtl" :options="projectInfoList"
+                ref="projectInfo" @on-change="getProjectCode" :readonly="!usernameinfo"
+                v-model="project_code" placeholder="请选择项目名称"
+                @click.native="judgeHaveUserName()"
+                :value-map="['code', 'name']">
       </selector>
       <x-input title="项目编号" text-align="right" v-model="project_code" placeholder="项目编号" disabled>
       </x-input>
@@ -94,10 +98,12 @@ import { TransferDom } from 'vux'
 import bus from '@/eventbus/eventbus'
 import axios from 'axios'
 import queryString from 'querystring'
+import wxVoice from '../../../components/wxVoice'
 export default {
   name: "addorder",
   components: {
     Uploader,
+    wxVoice,
   },
   directives: {TransferDom},
   data() {
@@ -133,11 +139,8 @@ export default {
       options: {
         getThumbBoundsFn(index) {
           let thumbnail = document.querySelectorAll(".previewer-demo-img")[index];
-
           let pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
-
           let rect = thumbnail.getBoundingClientRect();
-
           return { x: rect.left, y: rect.top + pageYScroll, w: rect.width };
         }
       }, // options
@@ -171,7 +174,7 @@ export default {
     this.orderName = this.$store.state.orderInfo.orderName
     if(this.orderName.indexOf('售前') != -1) {
       this.getServeCategory(); // 服务类别
-    }
+    };
   },
   activated() {
     this.getOrderData()
@@ -201,21 +204,30 @@ export default {
     },
     getProjectName() {
       const data = {loginName: this.qycode};
+      console.log(data)
       const url = `http://imp.kingtop.com.cn:8080/platformServer/eService/getProjectListByLoginName`
+      // const url = `http://10.1.0.225:8081/platformServer/eService/getProjectListByLoginName`
       axios.post(url, queryString.stringify(data))
         .then(res => {
-          console.log(res)
+          // console.log(res);
           this.projectInfoList = res.data
         })
     },
+    judgeHaveUserName() {
+      if (!this.usernameinfo) return this.$vux.toast.text('请先选择业务员')
+    },
     getProjectCode(value) {
       const chooseProject = this.projectInfoList.filter(item => item.code == value)[0]
+      // console.log(chooseProject)
       this.project_name = chooseProject.name
+      this.workinfo = chooseProject.companyName
+      this.nameinfo = chooseProject.contactsName
+      this.telinfo = chooseProject.mobilePhone
     },
     getServeCategory() {
       this.axios.get(`dic/getDicValues.do?id=33`)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           this.serverCategory = res.data
         })
     },
@@ -257,7 +269,7 @@ export default {
         if (!this.serverCategory_id.length) return this.$vux.toast.text('请选择服务类别')
         if (!this.workinfo) return this.$vux.toast.text('请填写客户单位')
         // 服务类别
-        let serverNameArr = []
+        let serverNameArr = [];
         this.serverCategory_id.forEach(item => {
           this.serverCategory.forEach(item1 => {
             if (item == item1.id) return serverNameArr.push(item1.f_value)
@@ -295,12 +307,23 @@ export default {
     toSalesman() {
       this.$store.commit('changeSalesmanBackRouter', this.$route.path)
       this.$router.push({path: '/salesman', query: {userId: 1}})
+    },
+    getVoiceStr(str) {
+      this.questionvalue += str
     }
   }
 }
 </script>
 
 <style scoped>
+.fixedpadding {
+  -o-user-select: none;
+  -moz-user-select: none; /*火狐 firefox*/
+  -webkit-user-select: none; /*webkit浏览器*/
+  -ms-user-select: none; /*IE10+*/
+  -khtml-user-select :none; /*早期的浏览器*/
+  user-select: none;
+}
 .vux-header {
   position:fixed;
   top: 0;
@@ -338,6 +361,27 @@ div.el-select {
 div.el-select >>> input {
   border: 0;
 }
+
+  /*!* 语音 *!*/
+/*.voice {*/
+  /*text-align: center;*/
+  /*line-height: 39px;*/
+  /*width: 100%;*/
+  /*background-color: #f2f2f2;*/
+
+/*}*/
+/*.voice i {*/
+  /*font-size: 16px;*/
+  /*color: #fff;*/
+  /*margin-left: 4px;*/
+  /*margin-right: 4px;*/
+/*}*/
+/*.voice span {*/
+  /*vertical-align: middle;*/
+  /*padding: 4px 30%;*/
+  /*border-radius: 4px;*/
+  /*color: #fff;*/
+/*}*/
 </style>
 
 <style>

@@ -6,33 +6,36 @@
     <router-view @haveToken="getToken"></router-view>
     <tabbar v-model="index">
       <tabbar-item @on-item-click="$router.replace('/myorder')">
-        <i class="iconfont icon-fl-jia" slot="icon"></i>
-        <i class="iconfont icon-fl-jia" slot="icon-active" style="color: orange"></i>
+        <i class="iconfont myorder" slot="icon" style="background-position: 305px 0"></i>
+        <!-- background: url('../../static/img/jingling.png') 264px 0/375px -->
+        <i class="iconfont myorder" slot="icon-active" style="background-position: 264px 0;"></i>
         <span slot="label">我的工单</span>
       </tabbar-item>
       <tabbar-item @on-item-click="$router.replace('/assignedorder')" v-if="assignedorder">
-        <i class="iconfont icon-icon02" slot="icon"></i>
-        <i class="iconfont icon-icon02" slot="icon-active" style="color: orange"></i>
+        <!--<i class="iconfont icon-icon02" slot="icon"></i>-->
+        <!--<i class="iconfont icon-icon02" slot="icon-active" style="color: orange"></i>-->
+        <i class="iconfont" slot="icon" style="background-position: 305px -22px"></i>
+        <i class="iconfont" slot="icon-active" style="background-position: 264px -22px"></i>
         <span slot="label">指派工单</span>
       </tabbar-item>
       <tabbar-item @on-item-click="$router.replace('/confirmorder')" v-if="confirmorder">
-        <i class="iconfont icon-gongdan" slot="icon"></i>
-        <i class="iconfont icon-gongdan" slot="icon-active" style="color: orange"></i>
+        <i class="iconfont" slot="icon" style="background-position: 305px -44px"></i>
+        <i class="iconfont" slot="icon-active" style="background-position: 264px -44px"></i>
         <span slot="label">确认工单</span>
       </tabbar-item>
       <tabbar-item @on-item-click="$router.replace('/performorder')" v-if="performorder">
-        <i class="iconfont icon-fl-banzi" slot="icon"></i>
-        <i class="iconfont icon-fl-banzi" slot="icon-active" style="color: orange"></i>
+        <i class="iconfont" slot="icon" style="background-position: 305px -67px"></i>
+        <i class="iconfont" slot="icon-active" style="background-position: 264px -67px"></i>
         <span slot="label">执行工单</span>
       </tabbar-item>
       <tabbar-item @on-item-click="$router.replace('/internalorder')">
-        <i class="iconfont icon-xiangmuliebiao" slot="icon"></i>
-        <i class="iconfont icon-xiangmuliebiao" slot="icon-active" style="color: orange"></i>
+        <i class="iconfont" slot="icon" style="background-position: 305px -89px"></i>
+        <i class="iconfont" slot="icon-active" style="background-position: 264px -89px"></i>
         <span slot="label">内部工单</span>
       </tabbar-item>
-      <tabbar-item @on-item-click="$router.replace('/personal')">
-        <i class="iconfont icon-wo1" slot="icon"></i>
-        <i class="iconfont icon-wo1" slot="icon-active" style="color: orange"></i>
+      <tabbar-item @on-item-click="$router.push('/personal')">
+        <i class="iconfont" slot="icon" style="background-position: 305px -111px"></i>
+        <i class="iconfont" slot="icon-active" style="background-position: 264px -111px"></i>
         <span slot="label">我</span>
       </tabbar-item>
     </tabbar>
@@ -145,16 +148,26 @@ export default {
   bottom: 0;
 }
 i.iconfont {
-  font-size: 22px;
-  color: #fff;
+  display: block;
+  width: 18px;
+  height: 19px;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-image: url("../../static/img/jingling.png");
+  background-size: 375px;
 }
 div.weui-tabbar {
-  background-color: #2A91D8;
+  background-color: #fcfdff;
+  /*background-color: #ccc;*/
 }
 .weui-tabbar__item p.weui-tabbar__label span {
-  color: #fff;
+  color: #696969;
 }
 .weui-tabbar__item.weui-bar__item_on p.weui-tabbar__label span{
-  color: orange;
+  color: #1678ff;
 }
 </style>

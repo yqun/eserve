@@ -29,5 +29,30 @@ export default {
 </script>
 
 <style scoped>
-
+/* 底部线 */
+.vux-tab-wrap >>> .vux-tab {
+  background-color: transparent;
+}
+.vux-tab-wrap >>> .vux-tab-ink-bar { /* 选中的线 */
+  display: none !important;
+}
+.vux-tab .vux-tab-item.vux-tab-selected {
+  color: #1678ff;
+  position: relative;
+}
+.vux-tab .vux-tab-item.vux-tab-selected::after {
+  content: '';
+  display: block;
+  height: 2px;
+  width: 20px;
+  background-color: #1678ff;
+  position: absolute;
+  margin: auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.vux-tab .vux-tab-item {
+  background: none;
+}
 </style>
