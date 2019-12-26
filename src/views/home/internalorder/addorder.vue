@@ -171,14 +171,20 @@ export default {
   },
   created() {
     this.token = window.sessionStorage.getItem('token');
-    this.orderName = this.$store.state.orderInfo.orderName
+    // 获取业务员姓名回显
+    this.usernameinfo = window.sessionStorage.getItem('f_name');
+    this.usernameId = window.sessionStorage.getItem('id');
+    this.qycode = window.sessionStorage.getItem('f_name_qycode');
+    this.getProjectName();
+
+    this.orderName = this.$store.state.orderInfo.orderName;
     if(this.orderName.indexOf('售前') != -1) {
       this.getServeCategory(); // 服务类别
     };
   },
   activated() {
-    this.getOrderData()
-    this.getquery()
+    this.getOrderData();
+    this.getquery();
     bus.$on('sendAddress', address => {
       this.addressvalue = address
     })
@@ -195,6 +201,7 @@ export default {
       const userArr = this.$route.query.user;
       if (!userArr) return false;
       const jsonData = JSON.parse(userArr);
+      console.log(jsonData);
       if (jsonData.length > 0) {
         this.usernameinfo = jsonData[0].name;
         this.usernameId = jsonData[0].id;
@@ -204,7 +211,6 @@ export default {
     },
     getProjectName() {
       const data = {loginName: this.qycode};
-      console.log(data)
       const url = `http://imp.kingtop.com.cn:8080/platformServer/eService/getProjectListByLoginName`
       // const url = `http://10.1.0.225:8081/platformServer/eService/getProjectListByLoginName`
       axios.post(url, queryString.stringify(data))

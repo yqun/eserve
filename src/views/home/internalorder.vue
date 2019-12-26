@@ -52,18 +52,19 @@ export default {
         const path = this.$route.query.path;
         const dataId = this.$route.query.dataId;
         // const userId = window.location.search.split('&')[0].split('=')[1] || 'liwanlong';
-        this.axios
-          .get(`user/getToken.do?userId=${userId}`)
+        this.axios.get(`user/getToken.do?userId=${userId}`)
           .then(res => {
-            // console.log(res);
-            const {state} = res.data
+            console.log(res);
+            const {state} = res.data;
             if (state !== 1) return this.$vux.toast.text(res.data.info)
             // 成功
-            const {id, token, roles} = res.data
-            const rolesStr = JSON.stringify(roles)
-            window.sessionStorage.setItem('token', token)
-            window.sessionStorage.setItem('id', id)
-            window.sessionStorage.setItem('roles', rolesStr)
+            const {id, token, roles, f_name} = res.data;
+            const rolesStr = JSON.stringify(roles);
+            window.sessionStorage.setItem('token', token);
+            window.sessionStorage.setItem('id', id);
+            window.sessionStorage.setItem('roles', rolesStr);
+            window.sessionStorage.setItem('f_name', f_name);
+            window.sessionStorage.setItem('f_name_qycode', userId);
 
             this.$emit('haveToken') // 监听获取成功token
 
@@ -78,14 +79,13 @@ export default {
     },
     // 获取工单信息
     getOrderInfo() {
-      this.axios
-        .get('/workOrderType/findEntityByPage.do')
+      this.axios.get('/workOrderType/findEntityByPage.do')
         .then(res => {
-          console.log(res)
-          const {status} = res
+          // console.log(res)
+          const {status} = res;
           if (status !== 200) return false;
-          const {rows} = res.data
-          this.list = rows
+          const {rows} = res.data;
+          this.list = rows;
           this.list.forEach((item,index) => {
             this.list[index].imgUrl = `${this.axiosUrl}system/getImage.do?id=${item.f_image_id}`
           })
@@ -93,7 +93,7 @@ export default {
     },
     // 跳转到addorder
     toAddorder(item) {
-      this.$store.commit('changeOrderInfo', {orderId:item.id, orderName:item.f_type_name})
+      this.$store.commit('changeOrderInfo', {orderId:item.id, orderName:item.f_type_name});
       this.$router.push({path: '/addorder'})
     }
   }

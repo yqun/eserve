@@ -12,6 +12,7 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 
 const env = require('../config/prod.env')
 
+const timerStr = (new Date()).getTime()
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({
@@ -23,8 +24,8 @@ const webpackConfig = merge(baseWebpackConfig, {
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
     path: config.build.assetsRoot,
-    filename: utils.assetsPath('js/[name].[chunkhash].js'),
-    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
+    filename: utils.assetsPath('js/[name].[chunkhash]'+timerStr+'.js'),
+    chunkFilename: utils.assetsPath('js/[id].[chunkhash]'+timerStr+'.js')
   },
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
